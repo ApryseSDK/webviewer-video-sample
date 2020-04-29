@@ -35,7 +35,9 @@ To test the build directory locally you can use [serve](https://www.npmjs.com/pa
 
 ## WebViewer APIs
 
-See [API documentation](https://www.pdftron.com/documentation/web/guides/ui/apis).
+See @pdftron/webviewer [API documentation](https://www.pdftron.com/documentation/web/guides/ui/apis).
+See @pdftron/webviewer-video [API documentation](https://www.pdftron.com/api/web/module-@pdftron_webviewer-video.html).
+See Video Class [API documentation](https://www.pdftron.com/api/web/Video.html).
 
 ## Contributing
 
