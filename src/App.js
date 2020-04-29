@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import { initializeVideoViewer, loadVideo, loadVideoUI } from 'video';
+import { initializeVideoViewer, loadVideo, loadVideoUI } from '@pdftron/webviewer-video';
 import './App.css';
 
 const DOCUMENT_ID = 'video';

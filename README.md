@@ -2,7 +2,7 @@
 
 [WebViewer](https://www.pdftron.com/webviewer) is a powerful JavaScript-based PDF Library that's part of the [PDFTron PDF SDK](https://www.pdftron.com). It allows you to view and annotate PDF files on your web app with a fully customizable UI.
 
-This is a WebViewer Video package allows webviewer to load HTML videos (.mp4, ogg, webm) so that their video frames can be annotated.
+This is an addon for WebViewer that allows to load HTML videos (.mp4, ogg, webm) so that their video frames can be annotated.
 
 For more information, see this [guide](https://www.pdftron.com/documentation/web/get-started/manually-video/).
 
