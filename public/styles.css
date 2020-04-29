@@ -1,0 +1,161 @@
+.DocumentContainer {
+  background: green;
+}
+
+.video {
+  display: flex;
+  background: black;
+}
+
+.controls {
+  background: #303030;
+}
+
+/* -------- Buttons -------- */
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 10px;
+  background: #1D1A1A;
+}
+
+.video-buttons {
+  display: flex;
+}
+
+.icon {
+  fill: #fff;
+  padding: 5px;
+}
+
+.icon[data-state=hidden] {
+	display:none;
+}
+
+.icon[data-state=visible] {
+	display:block;
+}
+
+.time {
+  padding: 5px;
+}
+
+/* -------- Timeline -------- */
+
+.marker {
+  cursor:pointer;
+  position: absolute;
+  width: 4px;
+  height: 22px;
+  background: url(./icons.png) no-repeat -520px -226px;
+  background-size: 650px;
+}
+
+.marker:hover {
+  background: url(./icons.png) no-repeat -556px -226px;
+  background-size: 650px;
+  z-index: 9999;
+}
+
+.timeline {
+  position: relative;
+  margin: 10px 12px 0px 12px;
+}
+
+.timeline progress {
+	width:100%;
+  height:10px;
+  border:1px solid #aaa;
+  cursor: pointer;
+  display: block;
+}
+
+.timeline progress[value]::-webkit-progress-value {
+  background: #09c;
+  border-radius: 2px;
+  background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+.timeline-frames {
+  margin: 10px 12px 0px 12px;
+  z-index: 0; /* required for tooltip to always show */
+}
+
+.frame {
+  position: relative;
+  cursor: pointer;
+  border: 2px solid #aaa;
+  display: flex;
+  flex-direction: column;
+}
+
+/* needed to remove whitespace of a canvas in a div */
+canvas {
+  vertical-align: middle;
+}
+
+.frameFooter {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+  background: white;
+  border: 1px solid #aaa;
+  bottom: 0px;
+  color: black;
+  font-size: 8pt;
+  height: 20px;
+  fill: black;
+}
+
+.markers {
+  height: 22px;
+  width: 100%;
+}
+
+.frame[data-state=selected] {
+  border: 2px solid red;
+}
+
+.frameNumber {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* -------- Tooltip -------- */
+
+.tooltip {
+  display:block;
+  position: absolute;
+  z-index: 1;
+  left: 0px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10pt;
+  transform: translate(-50%, 6px);
+}
+
+.tooltip::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 0 5px 5px 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.tooltip[data-state=hidden] {
+	display:none;
+}
+
+.tooltip[data-state=visible] {
+	display:block;
+}
