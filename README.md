@@ -2,13 +2,11 @@
 
 [WebViewer](https://www.pdftron.com/webviewer) is a powerful JavaScript-based PDF Library that's part of the [PDFTron PDF SDK](https://www.pdftron.com). It allows you to view and annotate PDF files on your web app with a fully customizable UI.
 
-This sample uses the [video addon](https://www.npmjs.com/package/@pdftron/webviewer-video) for WebViewer. It allows the loading of HTML5 videos (.mp4, ogg, webm) so that their frames can be annotated.
-
-For more information, see this [guide](https://www.pdftron.com/documentation/web/get-started/manually-video/).
+This sample uses the [video addon](https://www.npmjs.com/package/@pdftron/webviewer-video) for WebViewer. It allows the loading of HTML5 videos (.mp4, ogg, webm) so that their frames can be annotated. For more information, see this [guide](https://www.pdftron.com/documentation/web/get-started/manually-video/).
 
 ![WebViewer](https://pdftron.s3.amazonaws.com/custom/websitefiles/wv-video.png)
 
-
+This repo is specifically designed for any users interested in integrating WebViewer into React project. This project was generated with Create React App. See Create React App documentation for more information.
 
 ## Initial setup
 
