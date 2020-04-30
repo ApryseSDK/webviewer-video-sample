@@ -4,9 +4,11 @@
 
 This sample uses the [video addon](https://www.npmjs.com/package/@pdftron/webviewer-video) for WebViewer. It allows the loading of HTML5 videos (.mp4, ogg, webm) so that their frames can be annotated.
 
+For more information, see this [guide](https://www.pdftron.com/documentation/web/get-started/manually-video/).
+
 ![WebViewer](https://pdftron.s3.amazonaws.com/custom/websitefiles/wv-video.png)
 
-For more information, see this [guide](https://www.pdftron.com/documentation/web/get-started/manually-video/).
+
 
 ## Initial setup
 
