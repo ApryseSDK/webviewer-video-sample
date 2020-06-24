@@ -18,6 +18,7 @@ const App = () => {
           'pageNavOverlay',
           'viewControlsButton',
           'panToolButton',
+          'textToolGroupButton',
         ],
       },
       viewer.current,
