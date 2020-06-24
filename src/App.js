@@ -19,6 +19,7 @@ const App = () => {
           'viewControlsButton',
           'panToolButton',
           'textToolGroupButton',
+          'signatureToolButton',
         ],
       },
       viewer.current,
