@@ -18,6 +18,8 @@ const App = () => {
           'pageNavOverlay',
           'viewControlsButton',
           'panToolButton',
+          'textToolGroupButton',
+          'signatureToolButton',
         ],
       },
       viewer.current,
