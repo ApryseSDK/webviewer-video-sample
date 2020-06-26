@@ -1,12 +1,18 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import { initializeVideoViewer } from '@pdftron/webviewer-video';
+import { initializeVideoViewer, VideoUI } from '@pdftron/webviewer-video';
 import './App.css';
+
+const r = require('react-dom');
+window.React2 = require('react');
+console.log(window.React1 === window.React2);
+debugger;
 
 const DOCUMENT_ID = 'video';
 
 const App = () => {
   const viewer = useRef(null);
+  const [webViewerInstance, setWebViewerInstance] = useState(null);
 
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
@@ -24,20 +30,17 @@ const App = () => {
       },
       viewer.current,
     ).then(async (instance) => {
+      setWebViewerInstance(instance);
       instance.setTheme('dark');
 
       const license = `---- Insert commercial license key here after purchase ----`;
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
       const {
         loadVideo,
-        loadVideoUI,
        } = await initializeVideoViewer(
         instance,
         license,
       );
-
-      // Attaches the video player UI
-      loadVideoUI();
 
       // Load a video at a specific url. This file needs to be relative to lib/ui/index.html.
       // Can be a local or public link
@@ -121,6 +124,9 @@ const App = () => {
   return (
     <div className="App">
       <div className="webviewer" ref={viewer}></div>
+      <VideoUI
+        webViewerInstance={webViewerInstance}
+      />
     </div>
   );
 };
