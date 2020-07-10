@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import { initializeVideoViewer, VideoUI } from '@pdftron/webviewer-video';
+import { initializeVideoViewer, Controls } from '@pdftron/webviewer-video';
 import './App.css';
 
 const DOCUMENT_ID = 'video';
@@ -118,8 +118,8 @@ const App = () => {
   return (
     <div className="App">
       <div className="webviewer" ref={viewer}></div>
-      <VideoUI
-        webViewerInstance={webViewerInstance}
+      <Controls
+        instance={webViewerInstance}
       />
     </div>
   );
