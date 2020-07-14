@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
 import { initializeVideoViewer } from '@pdftron/webviewer-video';
 import './App.css';
@@ -7,6 +7,7 @@ const DOCUMENT_ID = 'video';
 
 const App = () => {
   const viewer = useRef(null);
+  const [ internetExplorerCheck, setInternetExplorerCheck ] = useState(false);
 
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
@@ -35,6 +36,11 @@ const App = () => {
         instance,
         license,
       );
+
+      if (!loadVideo) {
+        setInternetExplorerCheck(true);
+        return;
+      }
 
       // Attaches the video player UI
       loadVideoUI();
@@ -117,6 +123,14 @@ const App = () => {
       });
     });
   }, []);
+
+  if (internetExplorerCheck) {
+    return (
+      <div>
+        WebViewer Video does not support Internet Explorer.
+      </div>
+    )
+  }
 
   return (
     <div className="App">
