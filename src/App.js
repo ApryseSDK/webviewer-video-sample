@@ -11,6 +11,11 @@ const App = () => {
 
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
+    if (window.document.documentMode) {
+      setInternetExplorerCheck(true);
+      return;
+    }
+
     WebViewer(
       {
         path: '/webviewer/lib',
@@ -36,11 +41,6 @@ const App = () => {
         instance,
         license,
       );
-
-      if (!loadVideo) {
-        setInternetExplorerCheck(true);
-        return;
-      }
 
       // Attaches the video player UI
       loadVideoUI();
