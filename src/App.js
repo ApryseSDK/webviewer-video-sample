@@ -26,11 +26,14 @@ const App = () => {
           'panToolButton',
           'textToolGroupButton',
           'signatureToolButton',
+          'leftPanel',
+          'leftPanelButton',
         ],
       },
       viewer.current,
     ).then(async (instance) => {
       instance.setTheme('dark');
+      instance.disableElements(['toolbarGroup-Edit']);
 
       const license = `---- Insert commercial license key here after purchase ----`;
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
