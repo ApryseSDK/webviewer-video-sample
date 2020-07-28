@@ -196,6 +196,11 @@ module.exports = {
         include: paths.appSrc,
       },
        // Handle node_modules packages that contain sourcemaps
+      //  {
+      //   test: /\.m?js/,
+      //   enforce: 'pre',
+      //   use: ['source-map-loader'],
+      // },
       {
         enforce: 'pre',
         exclude: /@babel(?:\/|\\{1,2})runtime/,
@@ -273,7 +278,7 @@ module.exports = {
               // because it was compiled. Thus, we don't want the browser
               // debugger to show the original code. Instead, the code
               // being evaluated would be much more helpful.
-              sourceMaps: false,
+              sourceMaps: true,
             },
           },
           // "postcss" loader applies autoprefixer to our CSS.
