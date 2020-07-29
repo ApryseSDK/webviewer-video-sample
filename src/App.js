@@ -14,12 +14,17 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
+        css: '/styles.css',
         disabledElements: [
           'searchButton',
           'pageNavOverlay',
           'viewControlsButton',
           'panToolButton',
-          'textToolGroupButton',
+          'underlineToolGroupButton',
+          'strikeoutToolGroupButton',
+          'highlightToolGroupButton',
+          'squigglyToolGroupButton',
+          'signatureToolButton',
           'leftPanel',
           'leftPanelButton',
           'toolbarGroup-Edit',
