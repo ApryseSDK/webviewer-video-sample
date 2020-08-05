@@ -126,9 +126,10 @@ const App = () => {
   return (
     <div className="App">
       <div className="webviewer" ref={viewer}></div>
-      <Controls
-        instance={webViewerInstance}
-      />
+      {webViewerInstance &&
+        <Controls
+          instance={webViewerInstance}
+        />}
     </div>
   );
 };
