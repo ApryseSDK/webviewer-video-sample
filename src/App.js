@@ -8,6 +8,7 @@ const DOCUMENT_ID = 'video';
 const App = () => {
   const viewer = useRef(null);
   const [ webViewerInstance, setWebViewerInstance ] = useState(null);
+  const [ documentLoaded, setDocumentLoaded ] = useState(false);
 
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
@@ -28,6 +29,7 @@ const App = () => {
           'leftPanel',
           'leftPanelButton',
           'toolbarGroup-Edit',
+          'themeChangeButton',
         ],
       },
       viewer.current,
@@ -87,6 +89,7 @@ const App = () => {
       // Load saved annotations
       docViewer.on('documentLoaded', () => {
         const video = docViewer.getDocument().getVideo();
+        // docViewer.setFitMode(instance.FitMode.FitPage);
 
         // Make a GET request to get XFDF string
         const loadXfdfString = (documentId) => {
@@ -119,6 +122,8 @@ const App = () => {
           }).then(() => {
             video.updateAnnotationsToTime(0);
           });
+
+        setDocumentLoaded(true);
       });
     });
   }, []);
@@ -126,7 +131,7 @@ const App = () => {
   return (
     <div className="App">
       <div className="webviewer" ref={viewer}></div>
-      {webViewerInstance &&
+      {webViewerInstance && documentLoaded &&
         <Controls
           instance={webViewerInstance}
         />}

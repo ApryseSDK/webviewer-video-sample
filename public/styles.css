@@ -6,12 +6,12 @@
 
 .DocumentContainer {
   /* overflow: hidden !important; */
+  /* background: #0f1014; */
 }
 
 .video-container {
   height: 360px;
   width: 640px;
-  /* background: black; */
   top: 50%;
   left: 50%;
 }
