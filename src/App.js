@@ -30,6 +30,7 @@ const App = () => {
           'leftPanelButton',
           'toolbarGroup-Edit',
           'themeChangeButton',
+          'fullscreenButton',
         ],
       },
       viewer.current,
