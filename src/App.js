@@ -36,6 +36,7 @@ const App = () => {
     ).then(async (instance) => {
       setWebViewerInstance(instance);
       instance.setTheme('dark');
+      instance.openElements('detachedNotesPanel');
 
       const license = `---- Insert commercial license key here after purchase ----`;
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
@@ -89,7 +90,6 @@ const App = () => {
       // Load saved annotations
       docViewer.on('documentLoaded', () => {
         const video = docViewer.getDocument().getVideo();
-        // docViewer.setFitMode(instance.FitMode.FitPage);
 
         // Make a GET request to get XFDF string
         const loadXfdfString = (documentId) => {
