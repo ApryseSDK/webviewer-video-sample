@@ -31,6 +31,7 @@ const App = () => {
           'toolbarGroup-Edit',
           'themeChangeButton',
           'fullscreenButton',
+          'menuButton',
         ],
       },
       viewer.current,
