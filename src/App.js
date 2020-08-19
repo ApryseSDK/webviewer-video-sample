@@ -16,6 +16,7 @@ const App = () => {
       {
         path: '/webviewer/lib',
         css: '/styles.css',
+        selectAnnotationOnCreation: true,
         disabledElements: [
           'searchButton',
           'pageNavOverlay',
@@ -32,13 +33,14 @@ const App = () => {
           'themeChangeButton',
           'fullscreenButton',
           'menuButton',
+          'annotationCommentButton',
         ],
       },
       viewer.current,
     ).then(async (instance) => {
       setWebViewerInstance(instance);
       instance.setTheme('dark');
-      instance.openElements('detachedNotesPanel');
+      instance.openElements('notesPanel');
 
       const license = `---- Insert commercial license key here after purchase ----`;
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
