@@ -15,3 +15,14 @@
   top: 50%;
   left: 50%;
 }
+
+.right-panel {
+  /* needed for weird issue with animation */
+  display: flex !important;
+}
+
+@media (max-width: 900px) {
+  .right-panel {
+    display: none !important;
+  }
+}

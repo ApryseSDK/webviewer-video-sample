@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import WebViewer from '@pdftron/webviewer';
 import { initializeVideoViewer, Controls } from '@pdftron/webviewer-video';
 import './App.css';
@@ -34,6 +35,7 @@ const App = () => {
           'fullscreenButton',
           'menuButton',
           'annotationCommentButton',
+          'toggleNotesButton',
         ],
       },
       viewer.current,
@@ -126,6 +128,14 @@ const App = () => {
           }).then(() => {
             video.updateAnnotationsToTime(0);
           });
+
+        // const measurementContainer = instance.iframeWindow.document.querySelector('.measurement-container');
+        // ReactDOM.render(
+        //   <Controls
+        //     instance={instance}
+        //   />,
+        //   measurementContainer,
+        // );
 
         setDocumentLoaded(true);
       });
