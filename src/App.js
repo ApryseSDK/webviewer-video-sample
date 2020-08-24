@@ -8,7 +8,6 @@ const DOCUMENT_ID = 'video';
 
 const App = () => {
   const viewer = useRef(null);
-  const [ webViewerInstance, setWebViewerInstance ] = useState(null);
   const [ documentLoaded, setDocumentLoaded ] = useState(false);
 
   // if using a class, equivalent of componentDidMount
@@ -40,7 +39,6 @@ const App = () => {
       },
       viewer.current,
     ).then(async (instance) => {
-      setWebViewerInstance(instance);
       instance.setTheme('dark');
       instance.openElements('notesPanel');
 
@@ -129,15 +127,15 @@ const App = () => {
             video.updateAnnotationsToTime(0);
           });
 
-        // const measurementContainer = instance.iframeWindow.document.querySelector('.measurement-container');
-        // ReactDOM.render(
-        //   <Controls
-        //     instance={instance}
-        //   />,
-        //   measurementContainer,
-        // );
-
         setDocumentLoaded(true);
+
+        const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
+        ReactDOM.render(
+          <Controls
+            instance={instance}
+          />,
+          customContainer,
+        );
       });
     });
   }, []);
@@ -145,10 +143,6 @@ const App = () => {
   return (
     <div className="App">
       <div className="webviewer" ref={viewer}></div>
-      {webViewerInstance && documentLoaded &&
-        <Controls
-          instance={webViewerInstance}
-        />}
     </div>
   );
 };

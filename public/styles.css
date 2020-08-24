@@ -4,6 +4,10 @@
   box-shadow: none !important;
 }
 
+.custom-container {
+  width: 100%;
+}
+
 .DocumentContainer {
   /* overflow: hidden !important; */
   /* background: #0f1014; */
