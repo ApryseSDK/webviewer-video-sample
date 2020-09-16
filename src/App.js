@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import WebViewer from '@pdftron/webviewer';
@@ -50,11 +51,11 @@ const App = () => {
         license,
       );
 
-      // Load a video at a specific url. This file needs to be relative to lib/ui/index.html.
-      // Can be a local or public link
+      // Load a video at a specific url. Can be a local or public link
+      // If local it needs to be relative to lib/ui/index.html.
+      // Or at the root. (eg '/video.mp4')
       const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
-      const thumbnail = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/thumbnail.jpg';
-      loadVideo(videoUrl, thumbnail);
+      loadVideo(videoUrl);
 
       const { docViewer, setHeaderItems } = instance;
       const annotManager = docViewer.getAnnotationManager();
@@ -82,7 +83,7 @@ const App = () => {
               });
             };
 
-            const annotations = docViewer.getDocument().getVideo().getAllAnnotations();
+            const annotations = docViewer.getAnnotationManager().getAnnotationsList();
             var xfdfString = await annotManager.exportAnnotations({ links: false, widgets: false, annotList: annotations });
             await saveXfdfString(DOCUMENT_ID, xfdfString);
             alert('Annotations saved successfully.');
@@ -103,6 +104,7 @@ const App = () => {
               if (response.status === 200) {
                 response.text()
                   .then(xfdfString => {
+                    console.log(xfdfString);
                     resolve(xfdfString);
                   });
               } else if (response.status === 204) {
