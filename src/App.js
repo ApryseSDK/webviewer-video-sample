@@ -35,6 +35,7 @@ const App = () => {
           'menuButton',
           'annotationCommentButton',
           'toggleNotesButton',
+          'annotationNoteConnectorLine',
         ],
       },
       viewer.current,
