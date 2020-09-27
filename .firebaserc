@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "webviewer-video"
+  },
+  "targets": {
+    "webviewer-video": {
+      "hosting": {
+        "webviewer-video": [
+          "webviewer-video"
+        ],
+        "webviewer-video-3-0": [
+          "webviewer-video-3-0"
+        ]
+      }
+    }
   }
 }

@@ -1,7 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import WebViewer from '@pdftron/webviewer';
-import { initializeVideoViewer } from '@pdftron/webviewer-video';
+import { initializeVideoViewer, Controls } from '@pdftron/webviewer-video';
 import './App.css';
+
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 const DOCUMENT_ID = 'video';
 
@@ -19,46 +22,55 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
+        css: '/styles.css',
+        selectAnnotationOnCreation: true,
         disabledElements: [
           'searchButton',
           'pageNavOverlay',
           'viewControlsButton',
           'panToolButton',
-          'textToolGroupButton',
+          'underlineToolGroupButton',
+          'strikeoutToolGroupButton',
+          'highlightToolGroupButton',
+          'squigglyToolGroupButton',
           'signatureToolButton',
           'leftPanel',
           'leftPanelButton',
+          'toolbarGroup-Edit',
+          'themeChangeButton',
+          'fullscreenButton',
+          'menuButton',
+          'annotationCommentButton',
+          'toggleNotesButton',
+          'annotationNoteConnectorLine',
         ],
       },
       viewer.current,
-    ).then(async (instance) => {
+    ).then(async instance => {
       instance.setTheme('dark');
-      instance.disableElements(['toolbarGroup-Edit']);
+      // safari check due to a bug in webviewer
+      !isSafari && instance.openElements('notesPanel');
 
       const license = `---- Insert commercial license key here after purchase ----`;
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
       const {
         loadVideo,
-        loadVideoUI,
-       } = await initializeVideoViewer(
+      } = await initializeVideoViewer(
         instance,
         license,
       );
 
-      // Attaches the video player UI
-      loadVideoUI();
-
-      // Load a video at a specific url. This file needs to be relative to lib/ui/index.html.
-      // Can be a local or public link
+      // Load a video at a specific url. Can be a local or public link
+      // If local it needs to be relative to lib/ui/index.html.
+      // Or at the root. (eg '/video.mp4')
       const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
-      const thumbnail = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/thumbnail.jpg';
-      loadVideo(videoUrl, thumbnail);
+      loadVideo(videoUrl);
 
       const { docViewer, setHeaderItems } = instance;
       const annotManager = docViewer.getAnnotationManager();
 
       // Add save annotations button
-      setHeaderItems((header) => {
+      setHeaderItems(header => {
         header.push({
           type: 'actionButton',
           img: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
@@ -68,11 +80,11 @@ const App = () => {
 
             // Make a POST request with XFDF string
             const saveXfdfString = (documentId, xfdfString) => {
-              return new Promise((resolve) => {
+              return new Promise(resolve => {
                 fetch(`/server/annotationHandler.js?documentId=${documentId}`, {
                   method: 'POST',
                   body: xfdfString,
-                }).then((response) => {
+                }).then(response => {
                   if (response.status === 200) {
                     resolve();
                   }
@@ -80,9 +92,9 @@ const App = () => {
               });
             };
 
-            const annotations = docViewer.getDocument().getVideo().getAllAnnotations();
+            const annotations = docViewer.getAnnotationManager().getAnnotationsList();
             var xfdfString = await annotManager.exportAnnotations({ links: false, widgets: false, annotList: annotations });
-            await saveXfdfString(DOCUMENT_ID, xfdfString)
+            await saveXfdfString(DOCUMENT_ID, xfdfString);
             alert('Annotations saved successfully.');
           }
         });
@@ -93,14 +105,14 @@ const App = () => {
         const video = docViewer.getDocument().getVideo();
 
         // Make a GET request to get XFDF string
-        const loadXfdfString = (documentId) => {
-          return new Promise((resolve) => {
+        const loadXfdfString = documentId => {
+          return new Promise(resolve => {
             fetch(`/server/annotationHandler.js?documentId=${documentId}`, {
               method: 'GET'
-            }).then((response) => {
+            }).then(response => {
               if (response.status === 200) {
                 response.text()
-                  .then((xfdfString) => {
+                  .then(xfdfString => {
                     console.log(xfdfString);
                     resolve(xfdfString);
                   });
@@ -117,12 +129,20 @@ const App = () => {
         };
 
         loadXfdfString(DOCUMENT_ID)
-          .then((xfdfString) => {
+          .then(xfdfString => {
             const annotManager = docViewer.getAnnotationManager();
-            return annotManager.importAnnotations(xfdfString)
+            return annotManager.importAnnotations(xfdfString);
           }).then(() => {
             video.updateAnnotationsToTime(0);
           });
+
+        const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
+        ReactDOM.render(
+          <Controls
+            instance={instance}
+          />,
+          customContainer,
+        );
       });
     });
   }, []);
@@ -132,12 +152,12 @@ const App = () => {
       <div>
         WebViewer Video does not support Internet Explorer.
       </div>
-    )
+    );
   }
 
   return (
     <div className="App">
-      <div className="webviewer" ref={viewer}></div>
+      <div className="webviewer" ref={viewer}/>
     </div>
   );
 };
