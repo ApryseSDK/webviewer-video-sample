@@ -1,6 +1,6 @@
 {
   "name": "webviewer-video-sample",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "dependencies": {
     "@babel/core": "7.1.0",
     "@pdftron/webviewer": "^7.1.0",
