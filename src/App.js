@@ -144,7 +144,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="webviewer" ref={viewer}></div>
+      <div className="webviewer" ref={viewer}/>
     </div>
   );
 };
