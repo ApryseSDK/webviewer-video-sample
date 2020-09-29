@@ -4,6 +4,8 @@
 
 This sample uses the [video addon](https://www.npmjs.com/package/@pdftron/webviewer-video) for WebViewer. It allows the loading of HTML5 videos (.mp4, ogg, webm) so that their frames can be annotated. For more information, see this [guide](https://www.pdftron.com/documentation/web/get-started/manually-video/).
 
+[Watch a video](https://youtu.be/d_yIN8aZE6Y) that highlights new features included in 3.0 release.
+
 ![WebViewer](https://pdftron.s3.amazonaws.com/custom/websitefiles/wv-video.png)
 
 This repo is specifically designed for any users interested in integrating WebViewer into React project. This project was generated with Create React App. See Create React App documentation for more information.
