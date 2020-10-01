@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
 import WebViewer from '@pdftron/webviewer';
-import { initializeVideoViewer, Controls } from '@pdftron/webviewer-video';
+import { initializeVideoViewer, renderControlsToDOM } from '@pdftron/webviewer-video';
 import './App.css';
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -138,12 +137,7 @@ const App = () => {
           });
 
         const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
-        ReactDOM.render(
-          <Controls
-            instance={instance}
-          />,
-          customContainer,
-        );
+        renderControlsToDOM(instance, customContainer);
       });
     });
   }, []);
