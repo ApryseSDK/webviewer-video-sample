@@ -21,7 +21,6 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
-        css: '/styles.css',
         selectAnnotationOnCreation: true,
         disabledElements: [
           'searchButton',
