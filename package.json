@@ -67,6 +67,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "deploy": "firebase deploy --only hosting:webviewer-video",
     "deploy-test": "firebase deploy --only hosting:webviewer-video-3-0",
     "start-server": "node server/server.js",
     "build": "GENERATE_SOURCEMAP=false node scripts/build.js",
