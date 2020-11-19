@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import { initializeVideoViewer, renderControlsToDOM } from '@pdftron/webviewer-video';
+import { initializeVideoViewer, renderControlsToDOM, unmountControls } from '@pdftron/webviewer-video';
 import './App.css';
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -34,6 +34,7 @@ const App = () => {
       const { docViewer } = instance;
 
       await loadSampleVideo(instance);
+
 
       // Load saved annotations
       docViewer.on('documentLoaded', () => {
@@ -76,6 +77,8 @@ const App = () => {
 
   function onSelectChange(event) {
     if (event.target.value === 'PDF') {
+      const customContainer = wvInstance.iframeWindow.document.querySelector('.custom-container');
+      unmountControls(customContainer);
       wvInstance.loadDocument('https://pdftron.s3.amazonaws.com/downloads/pl/demo-annotated.pdf');
     } else if (event.target.value === 'Video') {
       loadSampleVideo(wvInstance);
