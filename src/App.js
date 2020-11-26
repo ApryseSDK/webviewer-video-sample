@@ -11,7 +11,7 @@ const App = () => {
   const viewer = useRef(null);
   const inputFile = useRef(null);
   const [ internetExplorerCheck, setInternetExplorerCheck ] = useState(false);
-  const [ wvInstance, setWvInstance ] = useState(null);
+  const [ wvLoadVideo, setWvLoadVideo ] = useState(null);
   const license = `---- Insert commercial license key here after purchase ----`;
   
   // if using a class, equivalent of componentDidMount
@@ -48,8 +48,6 @@ const App = () => {
       },
       viewer.current,
     ).then(async instance => {
-      setWvInstance(instance);
-
       instance.setTheme('dark');
       // safari check due to a bug in webviewer
       !isSafari && instance.openElements('notesPanel');
@@ -61,6 +59,9 @@ const App = () => {
         instance,
         license,
       );
+
+      // Store loadVideo function
+      setWvLoadVideo(() => loadVideo);
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
@@ -123,7 +124,6 @@ const App = () => {
               if (response.status === 200) {
                 response.text()
                   .then(xfdfString => {
-                    console.log(xfdfString);
                     resolve(xfdfString);
                   });
               } else if (response.status === 204) {
@@ -154,15 +154,7 @@ const App = () => {
 
   async function onFileChange(event) {
     const url = URL.createObjectURL(event.target.files[0]);
-
-    const {
-      loadVideo,
-    } = await initializeVideoViewer(
-      wvInstance,
-      license,
-    );
-
-    loadVideo(url);
+    wvLoadVideo(url);
   }
 
   if (internetExplorerCheck) {
