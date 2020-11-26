@@ -25,30 +25,9 @@ const App = () => {
       {
         path: '/webviewer/lib',
         selectAnnotationOnCreation: true,
-        disabledElements: [
-          'searchButton',
-          'pageNavOverlay',
-          'viewControlsButton',
-          'panToolButton',
-          'underlineToolGroupButton',
-          'strikeoutToolGroupButton',
-          'highlightToolGroupButton',
-          'squigglyToolGroupButton',
-          'signatureToolButton',
-          'leftPanel',
-          'leftPanelButton',
-          'toolbarGroup-Edit',
-          'themeChangeButton',
-          'fullscreenButton',
-          'menuButton',
-          'annotationCommentButton',
-          'toggleNotesButton',
-          'annotationNoteConnectorLine',
-        ],
       },
       viewer.current,
     ).then(async instance => {
-      instance.setTheme('dark');
       // safari check due to a bug in webviewer
       !isSafari && instance.openElements('notesPanel');
 
@@ -102,6 +81,7 @@ const App = () => {
           }
         });
 
+        // Add upload file button
         header.push({
           type: 'actionButton',
           img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>',
@@ -150,7 +130,7 @@ const App = () => {
         renderControlsToDOM(instance, customContainer);
       });
     });
-  }, []);
+  }, [license]);
 
   async function onFileChange(event) {
     const url = URL.createObjectURL(event.target.files[0]);
