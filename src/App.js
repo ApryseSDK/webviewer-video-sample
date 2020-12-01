@@ -9,8 +9,11 @@ const DOCUMENT_ID = 'video';
 
 const App = () => {
   const viewer = useRef(null);
+  const inputFile = useRef(null);
   const [ internetExplorerCheck, setInternetExplorerCheck ] = useState(false);
-
+  const [ wvLoadVideo, setWvLoadVideo ] = useState(null);
+  const license = `---- Insert commercial license key here after purchase ----`;
+  
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
     if (window.document.documentMode) {
@@ -22,34 +25,12 @@ const App = () => {
       {
         path: '/webviewer/lib',
         selectAnnotationOnCreation: true,
-        disabledElements: [
-          'searchButton',
-          'pageNavOverlay',
-          'viewControlsButton',
-          'panToolButton',
-          'underlineToolGroupButton',
-          'strikeoutToolGroupButton',
-          'highlightToolGroupButton',
-          'squigglyToolGroupButton',
-          'signatureToolButton',
-          'leftPanel',
-          'leftPanelButton',
-          'toolbarGroup-Edit',
-          'themeChangeButton',
-          'fullscreenButton',
-          'menuButton',
-          'annotationCommentButton',
-          'toggleNotesButton',
-          'annotationNoteConnectorLine',
-        ],
       },
       viewer.current,
     ).then(async instance => {
-      instance.setTheme('dark');
       // safari check due to a bug in webviewer
       !isSafari && instance.openElements('notesPanel');
 
-      const license = `---- Insert commercial license key here after purchase ----`;
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
       const {
         loadVideo,
@@ -57,6 +38,9 @@ const App = () => {
         instance,
         license,
       );
+
+      // Store loadVideo function
+      setWvLoadVideo(() => loadVideo);
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
@@ -96,6 +80,15 @@ const App = () => {
             alert('Annotations saved successfully.');
           }
         });
+
+        // Add upload file button
+        header.push({
+          type: 'actionButton',
+          img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>',
+          onClick: () => {
+            inputFile.current.click();
+          }
+        });
       });
 
       // Load saved annotations
@@ -111,7 +104,6 @@ const App = () => {
               if (response.status === 200) {
                 response.text()
                   .then(xfdfString => {
-                    console.log(xfdfString);
                     resolve(xfdfString);
                   });
               } else if (response.status === 204) {
@@ -138,7 +130,12 @@ const App = () => {
         renderControlsToDOM(instance, customContainer);
       });
     });
-  }, []);
+  }, [license]);
+
+  async function onFileChange(event) {
+    const url = URL.createObjectURL(event.target.files[0]);
+    wvLoadVideo(url);
+  }
 
   if (internetExplorerCheck) {
     return (
@@ -150,6 +147,7 @@ const App = () => {
 
   return (
     <div className="App">
+      <input type="file" hidden ref={inputFile} onChange={onFileChange} value=""/>
       <div className="webviewer" ref={viewer}/>
     </div>
   );
