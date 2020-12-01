@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import { initializeVideoViewer, renderControlsToDOM } from '@pdftron/webviewer-video';
+import { initializeVideoViewer } from '@pdftron/webviewer-video';
 import './App.css';
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -41,6 +41,7 @@ const App = () => {
           'annotationCommentButton',
           'toggleNotesButton',
           'annotationNoteConnectorLine',
+          'annotationPopup',
         ],
       },
       viewer.current,
@@ -134,8 +135,8 @@ const App = () => {
             video.updateAnnotationsToTime(0);
           });
 
-        const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
-        renderControlsToDOM(instance, customContainer);
+        // const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
+        // renderControlsToDOM(instance, customContainer);
       });
     });
   }, []);
