@@ -55,13 +55,18 @@ const App = () => {
         loadVideo,
       } = await initializeVideoViewer(
         instance,
-        license,
+        {
+          license,
+          useCrossOrigin: true,
+          randomizeRequest: true,
+        }
       );
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+      // const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+      const videoUrl = 'https://webviewer-video.s3.amazonaws.com/video.mp4';
       loadVideo(videoUrl);
 
       const { docViewer, setHeaderItems } = instance;
