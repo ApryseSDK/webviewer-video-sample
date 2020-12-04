@@ -57,8 +57,6 @@ const App = () => {
         instance,
         {
           license,
-          useCrossOrigin: true,
-          randomizeRequest: true,
         }
       );
 

@@ -17,6 +17,7 @@ function customHeaderRequestFetch(event) {
 
   const newRequest = new Request(event.request, {
     withCredentials: true,
+    mode: 'cors',
     headers,
   });
   return fetch(newRequest);
