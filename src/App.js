@@ -13,7 +13,7 @@ const App = () => {
   const [ internetExplorerCheck, setInternetExplorerCheck ] = useState(false);
   const [ wvLoadVideo, setWvLoadVideo ] = useState(null);
   const license = `---- Insert commercial license key here after purchase ----`;
-  
+
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
     if (window.document.documentMode) {
