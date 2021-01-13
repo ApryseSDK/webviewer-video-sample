@@ -77,8 +77,8 @@ const App = () => {
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
-      loadAudio(videoUrl);
+      const audioUrl = '/audio.mp3';
+      loadAudio(audioUrl);
 
       const { docViewer } = instance;
 
@@ -115,8 +115,6 @@ const App = () => {
 
       // Load saved annotations
       docViewer.on('documentLoaded', () => {
-        const video = docViewer.getDocument().getVideo();
-
         // Make a GET request to get XFDF string
         const loadXfdfString = documentId => {
           return new Promise(resolve => {
@@ -145,12 +143,7 @@ const App = () => {
           .then(xfdfString => {
             const annotManager = docViewer.getAnnotationManager();
             return annotManager.importAnnotations(xfdfString);
-          }).then(() => {
-            video.updateAnnotationsToTime(0);
           });
-
-        // const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
-        // renderControlsToDOM(instance, customContainer);
       });
     });
   }, []);
