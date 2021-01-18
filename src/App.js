@@ -74,7 +74,7 @@ const App = () => {
         license,
       );
 
-      // Load a video at a specific url. Can be a local or public link
+      // Load a file at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
       const audioUrl = '/audio.mp3';
