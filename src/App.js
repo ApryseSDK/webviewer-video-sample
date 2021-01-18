@@ -1,11 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import { initializeVideoViewer } from '@pdftron/webviewer-video';
+import { initializeAudioViewer } from '@pdftron/webviewer-video';
 import './App.css';
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-const DOCUMENT_ID = 'video';
+const DOCUMENT_ID = 'audio';
 
 const App = () => {
   const viewer = useRef(null);
@@ -61,6 +61,8 @@ const App = () => {
       },
       viewer.current,
     ).then(async instance => {
+      const { setHeaderItems, annotManager } = instance;
+
       instance.setTheme('dark');
       // safari check due to a bug in webviewer
       !isSafari && instance.openElements('notesPanel');
@@ -69,7 +71,7 @@ const App = () => {
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
       const {
         loadAudio,
-      } = await initializeVideoViewer(
+      } = await initializeAudioViewer(
         instance,
         license,
       );
@@ -83,35 +85,35 @@ const App = () => {
       const { docViewer } = instance;
 
       // Add save annotations button
-      // setHeaderItems(header => {
-      //   header.push({
-      //     type: 'actionButton',
-      //     img: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
-      //     onClick: async () => {
-      //       // Save annotations when button is clicked
-      //       // widgets and links will remain in the document without changing so it isn't necessary to export them
+      setHeaderItems(header => {
+        header.push({
+          type: 'actionButton',
+          img: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
+          onClick: async () => {
+            // Save annotations when button is clicked
+            // widgets and links will remain in the document without changing so it isn't necessary to export them
 
-      //       // Make a POST request with XFDF string
-      //       const saveXfdfString = (documentId, xfdfString) => {
-      //         return new Promise(resolve => {
-      //           fetch(`/server/annotationHandler.js?documentId=${documentId}`, {
-      //             method: 'POST',
-      //             body: xfdfString,
-      //           }).then(response => {
-      //             if (response.status === 200) {
-      //               resolve();
-      //             }
-      //           });
-      //         });
-      //       };
+            // Make a POST request with XFDF string
+            const saveXfdfString = (documentId, xfdfString) => {
+              return new Promise(resolve => {
+                fetch(`/server/annotationHandler.js?documentId=${documentId}`, {
+                  method: 'POST',
+                  body: xfdfString,
+                }).then(response => {
+                  if (response.status === 200) {
+                    resolve();
+                  }
+                });
+              });
+            };
 
-      //       const annotations = docViewer.getAnnotationManager().getAnnotationsList();
-      //       var xfdfString = await annotManager.exportAnnotations({ links: false, widgets: false, annotList: annotations });
-      //       await saveXfdfString(DOCUMENT_ID, xfdfString);
-      //       alert('Annotations saved successfully.');
-      //     }
-      //   });
-      // });
+            const annotations = docViewer.getAnnotationManager().getAnnotationsList();
+            var xfdfString = await annotManager.exportAnnotations({ links: false, widgets: false, annotList: annotations });
+            await saveXfdfString(DOCUMENT_ID, xfdfString);
+            alert('Annotations saved successfully.');
+          }
+        });
+      });
 
       // Load saved annotations
       docViewer.on('documentLoaded', () => {
