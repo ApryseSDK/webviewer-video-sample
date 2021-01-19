@@ -2,7 +2,7 @@
 
 [WebViewer](https://www.pdftron.com/documentation/web/) is a powerful JavaScript-based PDF Library that's part of the [PDFTron PDF SDK](https://www.pdftron.com). It allows you to view and annotate PDF files on your web app with a fully customizable UI.
 
-This sample uses the [audio addon](https://www.npmjs.com/package/@pdftron/webviewer-audio) for WebViewer. It allows the loading of media elements (.mp3, .mp4, ogg, webm, etc.) so that it can annotated and redacted.
+This sample uses the [audio addon](https://www.npmjs.com/package/@pdftron/webviewer-audio) for WebViewer. It allows the loading of media elements (.mp3, .mp4, ogg, webm, etc.), so that their audio tracks can annotated and redacted.
 
 ![WebViewer](https://pdftron.s3.amazonaws.com/custom/websitefiles/wv-audio.png)
 
