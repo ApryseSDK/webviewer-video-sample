@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import { initializeAudioViewer } from '@pdftron/webviewer-video';
+import { initializeAudioViewer } from '@pdftron/webviewer-audio';
 import './App.css';
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -21,7 +21,6 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
-        selectAnnotationOnCreation: true,
         disabledElements: [
           'searchButton',
           'pageNavOverlay',
@@ -56,7 +55,7 @@ const App = () => {
           'dropdown-item-status',
           'dropdown-item-author',
           'dropdown-item-type',
-          // 'zoomOverlayButton',
+          'zoomOverlayButton',
         ],
       },
       viewer.current,
@@ -68,7 +67,7 @@ const App = () => {
       !isSafari && instance.openElements('notesPanel');
 
       const license = `---- Insert commercial license key here after purchase ----`;
-      // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
+      // Extends WebViewer to allow loading of media files.
       const {
         loadAudio,
       } = await initializeAudioViewer(
@@ -78,7 +77,7 @@ const App = () => {
 
       // Load a file at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
-      // Or at the root. (eg '/video.mp4')
+      // Or at the root. (eg '/audio.mp3')
       const audioUrl = '/audio.mp3';
       loadAudio(audioUrl);
 
@@ -116,8 +115,13 @@ const App = () => {
         });
       });
 
+      let once = false;
       // Load saved annotations
-      docViewer.on('documentLoaded', () => {
+      docViewer.on('pageComplete', () => {
+        if (once) {
+          return;
+        }
+        once = true;
         // Make a GET request to get XFDF string
         const loadXfdfString = documentId => {
           return new Promise(resolve => {
@@ -154,7 +158,7 @@ const App = () => {
   if (internetExplorerCheck) {
     return (
       <div>
-        WebViewer Video does not support Internet Explorer.
+        WebViewer Audio does not support Internet Explorer.
       </div>
     );
   }
