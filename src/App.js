@@ -3,8 +3,6 @@ import WebViewer from '@pdftron/webviewer';
 import { initializeVideoViewer, renderControlsToDOM } from '@pdftron/webviewer-video';
 import './App.css';
 
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
 const DOCUMENT_ID = 'video';
 
 const App = () => {
@@ -29,7 +27,7 @@ const App = () => {
       viewer.current,
     ).then(async instance => {
       // safari check due to a bug in webviewer
-      !isSafari && instance.openElements('notesPanel');
+      instance.openElements('notesPanel');
 
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
       const {
