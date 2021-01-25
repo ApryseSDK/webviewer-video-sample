@@ -3,6 +3,9 @@ import WebViewer from '@pdftron/webviewer';
 import { initializeVideoViewer, renderControlsToDOM } from '@pdftron/webviewer-video';
 import './App.css';
 
+// const { createFFmpeg, fetchFile } = require('@ffmpeg/ffmpeg');
+// const ffmpeg = createFFmpeg({ log: true });
+
 const DOCUMENT_ID = 'video';
 
 const App = () => {
@@ -32,7 +35,6 @@ const App = () => {
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
       const {
         loadVideo,
-        getFileULRWithMergedAnnots,
       } = await initializeVideoViewer(
         instance,
         license,
@@ -80,27 +82,27 @@ const App = () => {
           }
         });
 
-        // Add upload file button
-        header.push({
-          type: 'actionButton',
-          img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>',
-          onClick: () => {
-            inputFile.current.click();
-          }
-        });
+        // // Add upload file button
+        // header.push({
+        //   type: 'actionButton',
+        //   img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>',
+        //   onClick: () => {
+        //     inputFile.current.click();
+        //   }
+        // });
 
-        header.push({
-          type: 'actionButton',
-          img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>',
-          onClick: async () => {
-            const anchor = document.createElement('a');
-            anchor.href = await getFileULRWithMergedAnnots();
-            anchor.target = "_blank";
-            anchor.download = 'videoWithAnnots.mp4';
-            // Auto click on a element, trigger the file download
-            anchor.click();
-          }
-        });
+        // header.push({
+        //   type: 'actionButton',
+        //   img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>',
+        //   onClick: async () => {
+        //     const anchor = document.createElement('a');
+        //     anchor.href = await getFileULRWithMergedAnnots(ffmpeg, fetchFile);
+        //     anchor.target = "_blank";
+        //     anchor.download = 'videoWithAnnots.mp4';
+        //     // Auto click on a element, trigger the file download
+        //     anchor.click();
+        //   }
+        // });
       });
 
       // Load saved annotations
