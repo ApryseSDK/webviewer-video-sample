@@ -46,7 +46,7 @@ const App = () => {
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      const videoUrl = '/test4.mp4';
+      const videoUrl = '/input.mp4';
       loadVideo(videoUrl);
 
       const { docViewer, setHeaderItems } = instance;
