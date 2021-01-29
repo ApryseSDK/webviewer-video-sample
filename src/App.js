@@ -26,7 +26,6 @@ const App = () => {
       },
       viewer.current,
     ).then(async instance => {
-      // safari check due to a bug in webviewer
       instance.openElements('notesPanel');
 
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
