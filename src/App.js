@@ -3,8 +3,6 @@ import WebViewer from '@pdftron/webviewer';
 import { initializeVideoViewer, renderControlsToDOM } from '@pdftron/webviewer-video';
 import './App.css';
 
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
 const DOCUMENT_ID = 'video';
 
 const App = () => {
@@ -23,32 +21,11 @@ const App = () => {
         path: '/webviewer/lib',
         css: '/styles.css',
         selectAnnotationOnCreation: true,
-        disabledElements: [
-          'searchButton',
-          'pageNavOverlay',
-          'viewControlsButton',
-          'panToolButton',
-          'underlineToolGroupButton',
-          'strikeoutToolGroupButton',
-          'highlightToolGroupButton',
-          'squigglyToolGroupButton',
-          'signatureToolButton',
-          'leftPanel',
-          'leftPanelButton',
-          'toolbarGroup-Edit',
-          'themeChangeButton',
-          'fullscreenButton',
-          'menuButton',
-          'annotationCommentButton',
-          'toggleNotesButton',
-          'annotationNoteConnectorLine',
-        ],
       },
       viewer.current,
     ).then(async instance => {
       instance.setTheme('dark');
-      // safari check due to a bug in webviewer
-      !isSafari && instance.openElements('notesPanel');
+      instance.openElements('notesPanel');
 
       const license = `---- Insert commercial license key here after purchase ----`;
       // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
