@@ -8,21 +8,17 @@ const DOCUMENT_ID = 'video';
 const App = () => {
   const viewer = useRef(null);
   const inputFile = useRef(null);
-  const [ internetExplorerCheck, setInternetExplorerCheck ] = useState(false);
   const [ wvLoadVideo, setWvLoadVideo ] = useState(null);
   const license = `---- Insert commercial license key here after purchase ----`;
 
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
-    if (window.document.documentMode) {
-      setInternetExplorerCheck(true);
-      return;
-    }
-
     WebViewer(
       {
         path: '/webviewer/lib',
         selectAnnotationOnCreation: true,
+        // Fix for ie11. It can't switch to dark mode so we do it manually.
+        ...(window.document.documentMode && { css: '../../../styles.css' }),
       },
       viewer.current,
     ).then(async instance => {
@@ -132,14 +128,6 @@ const App = () => {
   async function onFileChange(event) {
     const url = URL.createObjectURL(event.target.files[0]);
     wvLoadVideo(url);
-  }
-
-  if (internetExplorerCheck) {
-    return (
-      <div>
-        WebViewer Video does not support Internet Explorer.
-      </div>
-    );
   }
 
   return (
