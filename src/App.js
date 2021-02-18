@@ -50,6 +50,7 @@ const App = () => {
       setHeaderItems(header => {
         header.push({
           type: 'actionButton',
+          disable: process.env.DEMO,
           img: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
           onClick: async () => {
             // Save annotations when button is clicked
@@ -90,37 +91,40 @@ const App = () => {
       docViewer.on('documentLoaded', () => {
         const video = docViewer.getDocument().getVideo();
 
-        // Make a GET request to get XFDF string
-        const loadXfdfString = documentId => {
-          return new Promise(resolve => {
-            fetch(`/server/annotationHandler.js?documentId=${documentId}`, {
-              method: 'GET'
-            }).then(response => {
-              if (response.status === 200) {
-                response.text()
-                  .then(xfdfString => {
-                    resolve(xfdfString);
-                  });
-              } else if (response.status === 204) {
-                console.warn(`Found no content in xfdf file /server/annotationHandler.js?documentId=${documentId}`);
-                resolve('');
-              } else {
-                console.warn(`Something went wrong trying to load xfdf file /server/annotationHandler.js?documentId=${documentId}`);
-                console.warn(`Response status ${response.status}`);
-                resolve('');
-              }
+        if (!process.env.DEMO) {
+          // Make a GET request to get XFDF string
+          const loadXfdfString = documentId => {
+            return new Promise(resolve => {
+              fetch(`/server/annotationHandler.js?documentId=${documentId}`, {
+                method: 'GET'
+              }).then(response => {
+                if (response.status === 200) {
+                  response.text()
+                    .then(xfdfString => {
+                      resolve(xfdfString);
+                    });
+                } else if (response.status === 204) {
+                  console.warn(`Found no content in xfdf file /server/annotationHandler.js?documentId=${documentId}`);
+                  resolve('');
+                } else {
+                  console.warn(`Something went wrong trying to load xfdf file /server/annotationHandler.js?documentId=${documentId}`);
+                  console.warn(`Response status ${response.status}`);
+                  resolve('');
+                }
+              });
             });
-          });
-        };
+          };
 
-        loadXfdfString(DOCUMENT_ID)
-          .then(xfdfString => {
-            const annotManager = docViewer.getAnnotationManager();
-            return annotManager.importAnnotations(xfdfString);
-          }).then(() => {
-            video.updateAnnotationsToTime(0);
-          });
+          loadXfdfString(DOCUMENT_ID)
+            .then(xfdfString => {
+              const annotManager = docViewer.getAnnotationManager();
+              return annotManager.importAnnotations(xfdfString);
+            }).then(() => {
+              video.updateAnnotationsToTime(0);
+            });
+        } else {
 
+        }
         const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
         renderControlsToDOM(instance, customContainer);
       });
