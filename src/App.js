@@ -5,6 +5,8 @@ import './App.css';
 
 const DOCUMENT_ID = 'video';
 
+console.log('process', process.env.DEMO);
+
 const App = () => {
   const viewer = useRef(null);
   const inputFile = useRef(null);
