@@ -50,6 +50,7 @@ const App = () => {
           type: 'actionButton',
           disable: process.env.DEMO,
           img: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
+          title: 'Save annotations',
           onClick: async () => {
             // Save annotations when button is clicked
             // widgets and links will remain in the document without changing so it isn't necessary to export them
@@ -79,6 +80,7 @@ const App = () => {
         header.push({
           type: 'actionButton',
           img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>',
+          title: 'Load video file',
           onClick: () => {
             inputFile.current.click();
           }
