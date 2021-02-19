@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Documentation Index</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Documentation</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="module-@pdftron_webviewer-video.html">@pdftron/webviewer-video</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Video.html">Video</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+
+
+
+
+
+    <section class="readme-section">
+        <article><h1>WebViewer Video</h1>
+<p><a href="https://www.pdftron.com/webviewer">WebViewer</a> is a powerful JavaScript-based PDF Library that's part of the <a href="https://www.pdftron.com">PDFTron PDF SDK</a>. It allows you to view and annotate PDF files on your web app with a fully customizable UI.</p>
+<p>This is an addon for WebViewer that allows loading HTML5 videos (.mp4, ogg, webm) so that their video frames can be annotated. For more information, see this <a href="https://www.pdftron.com/documentation/web/get-started/manually-video/">guide</a>.</p>
+<!-- How to clear image cache: https://stackoverflow.com/questions/26898052/how-to-force-image-cache-update-in-readme-rst-on-github -->
+<img src="https://pdftron.s3.amazonaws.com/custom/websitefiles/wv-video.png" width="730">
+<p>Also, try out the react sample <a href="https://github.com/PDFTron/webviewer-video-sample">here</a>. It shows how to integrate WebViewer and WebViewer-Video with a server component for the saving of annotations.</p>
+<h2>Demo</h2>
+<p>https://webviewer-video.web.app/</p>
+<h2>Initial setup</h2>
+<p>Before you begin, make sure your development environment includes <a href="https://www.npmjs.com/get-npm">Node.js and npm</a>.</p>
+<h2>Install</h2>
+<pre class="prettyprint source"><code>npm install @pdftron/webviewer-video
+</code></pre>
+<h2>How to use</h2>
+<p>Here is an example of how WebViewer and WebViewer-video could be integrated into your application.</p>
+<pre class="prettyprint source lang-javascript"><code>import React, { useRef, useEffect } from 'react';
+import WebViewer from '@pdftron/webviewer';
+import { initializeVideoViewer, renderControlsToDOM } from '@pdftron/webviewer-video';
+
+const App = () => {
+    const viewer = useRef(null);
+
+    useEffect(() => {
+      WebViewer(
+        {
+          path: '/webviewer/lib',
+          selectAnnotationOnCreation: true,
+        },
+        viewer.current,
+      ).then(async instance => {
+        // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
+        const {
+            loadVideo,
+        } = await initializeVideoViewer(
+            instance,
+            '---- Insert commercial license key here after purchase ----',
+        );
+
+        // Load a video at a specific url. Can be a local or public link
+        // If local it needs to be relative to lib/ui/index.html.
+        // Or at the root. (eg '/video.mp4')
+        const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+        loadVideo(videoUrl);
+
+        instance.docViewer.on('documentLoaded', () => {
+          const customContainer =
+              instance.iframeWindow.document.querySelector('.custom-container');
+
+          // Inject the video Controls into WebViewer
+          renderControlsToDOM(instance, customContainer);
+        });
+      });
+    }, []);
+
+    return (
+        &lt;div className=&quot;App&quot;>
+            &lt;div className=&quot;webviewer&quot; ref={viewer} />
+        &lt;/div>
+    );
+}
+
+export default App;
+</code></pre>
+<p>Also see the <a href="https://github.com/PDFTron/webviewer-video-sample">React sample</a>, for a complete solution, with further customizations.</p>
+<h3>Loading as a Script Tag</h3>
+<p>If your environment can not import WebViewer Video from the module, you can instead include WebViewer Video as a script tag. Simply, take the file <code>node_modules/@pdftron/webviewer-video/dist/main.js</code> and add it to your project's html page.</p>
+<pre class="prettyprint source lang-html"><code>    &lt;head>
+        ...
+        &lt;!-- main.js can be renamed -->
+        &lt;script src=&quot;./main.js&quot;>&lt;/script>
+    &lt;/head>
+</code></pre>
+<p>This will add the object <code>WebViewerVideo</code> to the window. This object contains <code>initializeVideoViewer</code> and <code>renderControlsToDOM</code>. So the previous code can be changed to:</p>
+<pre class="prettyprint source lang-javascript"><code>    ...
+    const {
+        loadVideo,
+    } = await window.WebViewerVideo.initializeVideoViewer(
+        instance,
+        '---- Insert commercial license key here after purchase ----',
+    );
+    ...
+    window.WebViewerVideo.renderControlsToDOM(instance, customContainer);
+</code></pre>
+<h2>Documentation</h2>
+<p>https://webviewer-video.web.app/doc/</p>
+<h2>License</h2>
+<p>WebViewer Video will run in trial mode until a license is provided. For more information on licensing, please visit our <a href="https://www.pdftron.com/licensing/">website</a>.</p></article>
+    </section>
+
+
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a>
+	
+		on 2021-02-18T16:31:38-08:00
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : false,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>
