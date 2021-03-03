@@ -76,6 +76,22 @@ const App = () => {
           }
         });
 
+        // Add a download file button
+        header.push({
+          type: 'actionButton',
+          dataElement: 'video-downloadFileButton',
+          title: `Download file`,
+          img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><defs><style>.cls-1{fill:#abb0c4;}</style></defs><title>icon - header - download</title><path class="cls-1" d="M11.55,17,5.09,9.66a.6.6,0,0,1,.45-1H8.67V2.6a.6.6,0,0,1,.6-.6h5.46a.6.6,0,0,1,.6.6V8.67h3.13a.6.6,0,0,1,.45,1L12.45,17A.6.6,0,0,1,11.55,17ZM3.11,20.18V21.6a.4.4,0,0,0,.4.4h17a.4.4,0,0,0,.4-.4V20.18a.4.4,0,0,0-.4-.4h-17A.4.4,0,0,0,3.11,20.18Z"/></svg>',
+          onClick: async () => {
+            const anchor = document.createElement('a');
+            anchor.href = videoUrl;
+            anchor.target = "_blank";
+            anchor.download = 'video.mp4'; // filename
+            // Auto click on a element, trigger the file download
+            anchor.click();
+          }
+        });
+
         // Add upload file button
         header.push({
           type: 'actionButton',
