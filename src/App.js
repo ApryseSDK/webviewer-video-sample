@@ -1,6 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import { initializeVideoViewer, renderControlsToDOM } from '@pdftron/webviewer-video';
+import {
+  initializeVideoViewer,
+  initializeWebViewerSettings,
+  renderControlsToDOM
+} from '@pdftron/webviewer-video';
 import './App.css';
 
 const DOCUMENT_ID = 'video';
@@ -8,8 +12,10 @@ const DOCUMENT_ID = 'video';
 const App = () => {
   const viewer = useRef(null);
   const inputFile = useRef(null);
+  const [ wvInstance, setInstance ] = useState(null);
   const [ wvLoadVideo, setWvLoadVideo ] = useState(null);
   const license = `---- Insert commercial license key here after purchase ----`;
+  const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
 
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
@@ -22,86 +28,25 @@ const App = () => {
       },
       viewer.current,
     ).then(async instance => {
-      instance.openElements('notesPanel');
-
-      // Extends WebViewer to allow loading HTML5 videos (.mp4, ogg, webm).
       const {
-        loadVideo,
+        loadVideo
       } = await initializeVideoViewer(
         instance,
         license,
       );
 
-      // Store loadVideo function
+      instance.openElements('notesPanel');
       setWvLoadVideo(() => loadVideo);
+      setInstance(instance);
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
       loadVideo(videoUrl);
+      initializeHeader(instance);
 
-      const { docViewer, setHeaderItems } = instance;
+      const { docViewer } = instance;
       const annotManager = docViewer.getAnnotationManager();
-
-      // Add save annotations button
-      setHeaderItems(header => {
-        header.push({
-          type: 'actionButton',
-          disable: process.env.DEMO,
-          img: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
-          title: 'Save annotations',
-          onClick: async () => {
-            // Save annotations when button is clicked
-            // widgets and links will remain in the document without changing so it isn't necessary to export them
-
-            // Make a POST request with XFDF string
-            const saveXfdfString = (documentId, xfdfString) => {
-              return new Promise(resolve => {
-                fetch(`/server/annotationHandler.js?documentId=${documentId}`, {
-                  method: 'POST',
-                  body: xfdfString,
-                }).then(response => {
-                  if (response.status === 200) {
-                    resolve();
-                  }
-                });
-              });
-            };
-
-            const annotations = docViewer.getAnnotationManager().getAnnotationsList();
-            var xfdfString = await annotManager.exportAnnotations({ links: false, widgets: false, annotList: annotations });
-            await saveXfdfString(DOCUMENT_ID, xfdfString);
-            alert('Annotations saved successfully.');
-          }
-        });
-
-        // Add a download file button
-        header.push({
-          type: 'actionButton',
-          dataElement: 'video-downloadFileButton',
-          title: `Download file`,
-          img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><defs><style>.cls-1{fill:#abb0c4;}</style></defs><title>icon - header - download</title><path class="cls-1" d="M11.55,17,5.09,9.66a.6.6,0,0,1,.45-1H8.67V2.6a.6.6,0,0,1,.6-.6h5.46a.6.6,0,0,1,.6.6V8.67h3.13a.6.6,0,0,1,.45,1L12.45,17A.6.6,0,0,1,11.55,17ZM3.11,20.18V21.6a.4.4,0,0,0,.4.4h17a.4.4,0,0,0,.4-.4V20.18a.4.4,0,0,0-.4-.4h-17A.4.4,0,0,0,3.11,20.18Z"/></svg>',
-          onClick: async () => {
-            const anchor = document.createElement('a');
-            anchor.href = videoUrl;
-            anchor.target = "_blank";
-            anchor.download = 'video.mp4'; // filename
-            // Auto click on a element, trigger the file download
-            anchor.click();
-          }
-        });
-
-        // Add upload file button
-        header.push({
-          type: 'actionButton',
-          img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>',
-          title: 'Load video file',
-          onClick: () => {
-            inputFile.current.click();
-          }
-        });
-      });
 
       // Load saved annotations
       docViewer.on('documentLoaded', async () => {
@@ -146,7 +91,82 @@ const App = () => {
 
   async function onFileChange(event) {
     const url = URL.createObjectURL(event.target.files[0]);
-    wvLoadVideo(url);
+
+    // Can also detect by specific video file types (ie. mp4, ogg, etc.)
+    if (event.target.files[0].type.includes('video')) {
+      initializeWebViewerSettings(wvInstance);
+      wvLoadVideo(url);
+      // TODO: Notespanel needs to be delay when opening. Not sure why.
+      setTimeout(() => {
+        wvInstance.openElements('notesPanel');
+      }, 500);
+    } else {
+      wvInstance.loadDocument(url);
+    }
+  }
+
+  function initializeHeader(instance) {
+    const { setHeaderItems, docViewer } = instance;
+    const annotManager = docViewer.getAnnotationManager();
+
+    // Add save annotations button
+    setHeaderItems(header => {
+      header.push({
+        type: 'actionButton',
+        disable: process.env.DEMO,
+        img: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
+        title: 'Save annotations',
+        onClick: async () => {
+          // Save annotations when button is clicked
+          // widgets and links will remain in the document without changing so it isn't necessary to export them
+
+          // Make a POST request with XFDF string
+          const saveXfdfString = (documentId, xfdfString) => {
+            return new Promise(resolve => {
+              fetch(`/server/annotationHandler.js?documentId=${documentId}`, {
+                method: 'POST',
+                body: xfdfString,
+              }).then(response => {
+                if (response.status === 200) {
+                  resolve();
+                }
+              });
+            });
+          };
+
+          const annotations = docViewer.getAnnotationManager().getAnnotationsList();
+          var xfdfString = await annotManager.exportAnnotations({ links: false, widgets: false, annotList: annotations });
+          await saveXfdfString(DOCUMENT_ID, xfdfString);
+          alert('Annotations saved successfully.');
+        }
+      });
+
+      // Add a download file button
+      header.push({
+        type: 'actionButton',
+        dataElement: 'video-downloadFileButton',
+        title: `Download file`,
+        img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><defs><style>.cls-1{fill:#abb0c4;}</style></defs><title>icon - header - download</title><path class="cls-1" d="M11.55,17,5.09,9.66a.6.6,0,0,1,.45-1H8.67V2.6a.6.6,0,0,1,.6-.6h5.46a.6.6,0,0,1,.6.6V8.67h3.13a.6.6,0,0,1,.45,1L12.45,17A.6.6,0,0,1,11.55,17ZM3.11,20.18V21.6a.4.4,0,0,0,.4.4h17a.4.4,0,0,0,.4-.4V20.18a.4.4,0,0,0-.4-.4h-17A.4.4,0,0,0,3.11,20.18Z"/></svg>',
+        onClick: async () => {
+          const anchor = document.createElement('a');
+          anchor.href = videoUrl;
+          anchor.target = "_blank";
+          anchor.download = 'video.mp4'; // filename
+          // Auto click on a element, trigger the file download
+          anchor.click();
+        }
+      });
+
+      // Add upload file button
+      header.push({
+        type: 'actionButton',
+        img: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>',
+        title: 'Load file',
+        onClick: () => {
+          inputFile.current.click();
+        }
+      });
+    });
   }
 
   return (
