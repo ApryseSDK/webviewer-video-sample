@@ -96,6 +96,7 @@ const App = () => {
     if (event.target.files[0].type.includes('video')) {
       initializeWebViewerSettings(wvInstance);
       wvLoadVideo(url);
+      // TODO: Notespanel needs to be delay when opening. Not sure why.
       setTimeout(() => {
         wvInstance.openElements('notesPanel');
       }, 500);
