@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
 import {
   initializeVideoViewer,
-  initializeWebViewerSettings,
   renderControlsToDOM
 } from '@pdftron/webviewer-video';
 import './App.css';
@@ -95,7 +94,6 @@ const App = () => {
     // Seamlessly switch between PDFs and videos.
     // Can also detect by specific video file types (ie. mp4, ogg, etc.)
     if (event.target.files[0].type.includes('video')) {
-      initializeWebViewerSettings(wvInstance);
       wvLoadVideo(url);
       // TODO: Notespanel needs to be delayed when opening. Not sure why.
       setTimeout(() => {

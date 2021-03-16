@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "dependencies": {
     "@babel/core": "7.1.0",
-    "@pdftron/webviewer": "^7.3.0-20210314",
+    "@pdftron/webviewer": "7.3.0-20210314",
     "@pdftron/webviewer-video": "^3.6.0",
     "@svgr/webpack": "2.4.1",
     "babel-core": "7.0.0-bridge.0",
