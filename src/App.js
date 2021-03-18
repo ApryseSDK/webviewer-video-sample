@@ -89,12 +89,18 @@ const App = () => {
   }, [license]);
 
   async function onFileChange(event) {
-    const url = URL.createObjectURL(event.target.files[0]);
+    const file = event.target.files[0];
+    const url = URL.createObjectURL(file);
 
     // Seamlessly switch between PDFs and videos.
     // Can also detect by specific video file types (ie. mp4, ogg, etc.)
-    if (event.target.files[0].type.includes('video')) {
-      wvLoadVideo(url);
+    if (file.type.includes('video')) {
+      wvLoadVideo(
+        url,
+        {
+          fileName: file.name,
+        }
+      );
       // TODO: Notespanel needs to be delayed when opening. Not sure why.
       setTimeout(() => {
         wvInstance.openElements('notesPanel');
