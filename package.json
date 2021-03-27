@@ -4,7 +4,7 @@
   "dependencies": {
     "@babel/core": "7.1.0",
     "@pdftron/webviewer": "7.3.0-20210314",
-    "@pdftron/webviewer-video": "^3.7.1",
+    "@pdftron/webviewer-video": "^3.7.4",
     "@svgr/webpack": "2.4.1",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
@@ -67,6 +67,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "clean": "rm -rf node_modules/ package-lock.json",
     "start-demo": "DEMO=true node scripts/start.js",
     "deploy-demo": "npm run build-demo && firebase deploy --only hosting:webviewer-video",
     "start-server": "node server/server.js",
