@@ -35,6 +35,8 @@ const App = () => {
       );
 
       instance.openElements('notesPanel');
+      instance.setTheme('dark');
+      
       setWvLoadVideo(() => loadVideo);
       setInstance(instance);
 
@@ -83,7 +85,12 @@ const App = () => {
           video.updateAnnotationsToTime(0);
         }
         const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
-        renderControlsToDOM(instance, customContainer);
+        const videoSettings = {
+          showFrames: true,
+        };
+
+        // Settings can be passed into the controls to configure the interface/functionality
+        renderControlsToDOM(instance, customContainer, videoSettings);
       });
     });
   }, [license]);
