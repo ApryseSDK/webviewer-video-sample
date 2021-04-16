@@ -87,6 +87,7 @@ const App = () => {
         const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
         const videoSettings = {
           showFrames: true,
+          showAudioViewer: true,
         };
 
         // Settings can be passed into the controls to configure the interface/functionality
