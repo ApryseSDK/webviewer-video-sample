@@ -5,6 +5,7 @@ import {
   renderControlsToDOM
 } from '@pdftron/webviewer-video';
 import './App.css';
+import { Waveform } from '@pdftron/webviewer-audio';
 
 const DOCUMENT_ID = 'video';
 
@@ -87,7 +88,7 @@ const App = () => {
         const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
         const videoSettings = {
           showFrames: true,
-          showAudioViewer: true,
+          AudioComponent: Waveform,
         };
 
         // Settings can be passed into the controls to configure the interface/functionality
