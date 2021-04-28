@@ -152,9 +152,6 @@ module.exports = {
       'react-native': 'react-native-web',
       // Added by KRISTIAN for aliasing react
       // react: path.resolve(__dirname, '../node_modules/react')
-      '@pdftron/webviewer-audio': path.resolve(__dirname, '../node_modules/@pdftron/webviewer-audio'),
-      react: path.resolve(__dirname, '../node_modules/react'),
-      'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
     },
     plugins: [
       // Adds support for installing with Plug'n'Play, leading to faster installs and adding
