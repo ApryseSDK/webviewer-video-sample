@@ -44,7 +44,8 @@ const App = () => {
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      loadVideo(videoUrl);
+      // A unique fileId should be generated for each url for audio caching to work properly
+      loadVideo(videoUrl, { fileId: 'testId' });
       initializeHeader(instance);
 
       const { docViewer } = instance;
@@ -87,8 +88,9 @@ const App = () => {
         }
         const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
         const videoSettings = {
-          showFrames: true,
+          showFrames: false,
           AudioComponent: Waveform,
+          cacheAudioWaveform: true,
         };
 
         // Settings can be passed into the controls to configure the interface/functionality
@@ -108,6 +110,7 @@ const App = () => {
         url,
         {
           fileName: file.name,
+          fileId: file.name,
         }
       );
       // TODO: Notespanel needs to be delayed when opening. Not sure why.
