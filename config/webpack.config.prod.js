@@ -225,7 +225,8 @@ module.exports = {
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
       // Added by KRISTIAN for aliasing react
-      // react: path.resolve(__dirname, '../node_modules/react')
+      react: path.resolve(__dirname, '../node_modules/react'),
+      'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
     },
     plugins: [
       // Adds support for installing with Plug'n'Play, leading to faster installs and adding
