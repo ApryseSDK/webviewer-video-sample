@@ -91,6 +91,7 @@ const App = () => {
         wvInstance.openElements('notesPanel');
       }, 500);
     } else {
+      wvInstance.setToolMode('AnnotationEdit');
       wvInstance.loadDocument(url);
     }
   }
