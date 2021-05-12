@@ -35,7 +35,7 @@ const App = () => {
 
       instance.openElements('notesPanel');
       instance.setTheme('dark');
-      
+
       setWvLoadVideo(() => loadVideo);
       setInstance(instance);
 
@@ -58,7 +58,7 @@ const App = () => {
           await annotManager.importAnnotations(demoXfdfString);
           video.updateAnnotationsToTime(0);
         }
-        
+
         const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
         const videoSettings = {
           showFrames: false,
