@@ -1,9 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import {
-  initializeVideoViewer,
-  renderControlsToDOM
-} from '@pdftron/webviewer-video';
+import { initializeVideoViewer } from '@pdftron/webviewer-video';
 import './App.css';
 
 const DOCUMENT_ID = 'video';
@@ -27,11 +24,17 @@ const App = () => {
       },
       viewer.current,
     ).then(async instance => {
+      const videoSettings = {
+        showFrames: true,
+        showTooltipPreview: true,
+      };
+
       const {
         loadVideo
       } = await initializeVideoViewer(
         instance,
         license,
+        videoSettings,
       );
 
       instance.openElements('notesPanel');
@@ -84,14 +87,6 @@ const App = () => {
           await annotManager.importAnnotations(demoXfdfString);
           video.updateAnnotationsToTime(0);
         }
-        const customContainer = instance.iframeWindow.document.querySelector('.custom-container');
-        const videoSettings = {
-          showFrames: true,
-          showTooltipPreview: false,
-        };
-
-        // Settings can be passed into the controls to configure the interface/functionality
-        renderControlsToDOM(instance, customContainer, videoSettings);
       });
     });
   }, [license]);
