@@ -1136,6 +1136,655 @@ renderFullscreenButton(webViewerInstance, video, customContainer)</pre>
         <dl>
                 
 <hr>
+<dt>
+    <h4 class="name" id="~getVideo"><span class="type-signature"></span>getVideo()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Returns the instance of <a href="Video.html">Video</a> associated with the document.
+This needs to be called after the 'documentLoaded' event of webviewer <a href="https://www.pdftron.com/api/web/CoreControls.DocumentViewer.html#event:documentLoaded">https://www.pdftron.com/api/web/CoreControls.DocumentViewer.html#event:documentLoaded</a>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    The instance of <a href="Video.html">Video</a> associated with the document.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt>
+    <h4 class="name" id="~loadVideo"><span class="type-signature"></span>loadVideo(videoUrl, options)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Loads a video for the WebViewer instance passed into initializeVideoViewer.
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>videoUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The video url</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Optional options object
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Length of the video in seconds. Used for faster loading of the video when using Safari.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fileName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Name of the file. URLs without an extention need this property set.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt>
+    <h4 class="name" id="~setVideoWatermark"><span class="type-signature"></span>setVideoWatermark(options)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Set a custom watermark to be applied on the video.
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Optional options object
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>watermarkText</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Watermark text to be shown on canvas</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fillStyle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Color of watermark text</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>globalAlpha</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Alpha of watermark text</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+            
+                
+<hr>
 <dt class="name" id="~VideoFunctions">
     <h4 id="~VideoFunctions">VideoFunctions</h4>
 
@@ -1187,13 +1836,13 @@ renderFullscreenButton(webViewerInstance, video, customContainer)</pre>
 
         <tr>
             
-                <td class="name"><code>loadVideo</code></td>
+                <td class="name"><code>getVideo</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">getVideo</span>
 
 
 
@@ -1204,10 +1853,31 @@ renderFullscreenButton(webViewerInstance, video, customContainer)</pre>
 
             
 
-            <td class="description last">Loads a video for the WebViewer instance passed into initializeVideoViewer.
-First param is the video url.
-Second optional param is the options object. This object has two keys. One is, 'duration' which is the legnth of the video in seconds. Pass this in for faster loading of the video.
-The other is 'fileName', pass this in if the file name is not int the url.</td>
+            <td class="description last">Returns the instance of <a href="Video.html">Video</a> associated with the document.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>loadVideo</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">loadVideo</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Loads a video for the WebViewer instance passed into initializeVideoViewer.</td>
         </tr>
 
     
@@ -1220,7 +1890,7 @@ The other is 'fileName', pass this in if the file name is not int the url.</td>
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">setVideoWatermark</span>
 
 
 
@@ -1231,8 +1901,7 @@ The other is 'fileName', pass this in if the file name is not int the url.</td>
 
             
 
-            <td class="description last">Set a custom watermark to be applied on the video.
-First param is an options object containing three keys: watermarkText {string}, fillStyle {string} and globalAlpha {float}.</td>
+            <td class="description last">Set a custom watermark to be applied on the video.</td>
         </tr>
 
     
@@ -1346,7 +2015,7 @@ First param is an options object containing three keys: watermarkText {string}, 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a>
 	
-		on 2021-05-19T13:57:26-07:00
+		on 2021-05-19T17:25:09-07:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
