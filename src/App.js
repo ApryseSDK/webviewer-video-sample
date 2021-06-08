@@ -31,7 +31,8 @@ const App = () => {
       };
 
       const {
-        loadVideo
+        getVideo,
+        loadVideo,
       } = await initializeVideoViewer(
         instance,
         license,
@@ -55,7 +56,7 @@ const App = () => {
 
       // Load saved annotations
       docViewer.on('documentLoaded', async () => {
-        const video = docViewer.getDocument().getVideo();
+        const video = getVideo();
         const loadXfdfString = documentId => {
           return new Promise(resolve => {
             fetch(`/server/annotationHandler.js?documentId=${documentId}`, {
