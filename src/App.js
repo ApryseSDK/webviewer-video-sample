@@ -27,6 +27,7 @@ const App = () => {
       const videoSettings = {
         showFrames: true,
         showTooltipPreview: true,
+        renderControls: true,
       };
 
       const {
