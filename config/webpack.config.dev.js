@@ -196,7 +196,7 @@ module.exports = {
         ],
         include: paths.appSrc,
       },
-      // Handle node_modules packages that contain sourcemaps
+      // Added by KRISTIAN for: Handle node_modules packages that contain sourcemaps
       //  {
       //   test: /\.m?js/,
       //   enforce: 'pre',
