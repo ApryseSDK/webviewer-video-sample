@@ -24,19 +24,14 @@ const App = () => {
       },
       viewer.current,
     ).then(async instance => {
-      const videoSettings = {
-        showFrames: true,
-        showTooltipPreview: true,
-        renderControls: true,
-      };
-
       const {
         getVideo,
         loadVideo,
       } = await initializeVideoViewer(
         instance,
-        license,
-        videoSettings,
+        {
+          license,
+        }
       );
 
       instance.openElements('notesPanel');
