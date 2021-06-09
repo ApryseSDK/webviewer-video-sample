@@ -305,7 +305,7 @@ See the npm package on <a href="https://www.npmjs.com/package/@pdftron/webviewer
 
         <tr>
             
-                <td class="name"><code>useCrossOrigin</code></td>
+                <td class="name"><code>showFrames</code></td>
             
 
             <td class="type">
@@ -333,19 +333,19 @@ See the npm package on <a href="https://www.npmjs.com/package/@pdftron/webviewer
             
                 <td class="default">
                 
-                    false
+                    true
                 
                 </td>
             
 
-            <td class="description last">Sets crossorigin='anonymous' on the video element. CORS requests for the video element will have the credentials flag set to 'same-origin'.</td>
+            <td class="description last">Shows or hides video timeline reel.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>randomizeRequests</code></td>
+                <td class="name"><code>showTooltipPreview</code></td>
             
 
             <td class="type">
@@ -373,12 +373,52 @@ See the npm package on <a href="https://www.npmjs.com/package/@pdftron/webviewer
             
                 <td class="default">
                 
-                    false
+                    true
                 
                 </td>
             
 
-            <td class="description last">Useful when `useCrossOrigin` is set to true. Sometimes, when testing, the browser can cache requests and respond with an old header. Use this option to reset the cache. This fix will be necessary when changing `useCrossOrigin` from false to true for the first time.</td>
+            <td class="description last">Shows or hides tooltip preview.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>renderControls</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last">Shows or hides the video controls.</td>
         </tr>
 
     
@@ -480,490 +520,14 @@ See the npm package on <a href="https://www.npmjs.com/package/@pdftron/webviewer
         instance,
         {
           license,
-          useCrossOrigin: true,
-          randomizeRequest: true,
+          showFrames: true,
+          showTooltipPreview: true,
+          renderControls: true,
         },
       );
 
       loadVideo(&#x27;https://www.mydomain.com/my_video_url&#x27;);
     });</pre>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".renderControlsToDOM"><span class="type-signature">&lt;static> </span>renderControlsToDOM(instance, customContainer, videoSettings)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Mounts the react component for the video controls into the passed in container.
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>instance</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The WebViewer instance</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>customContainer</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">A container element, e.g. a div.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>videoSettings</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">video specific settings
-                <h6 class="method-params-label method-subparams-label">Properties</h6>
-                
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Argument</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>showFrames</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last">Shows or hides video timeline reel.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>showTooltipPreview</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last">Shows or hides tooltip preview.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">const customContainer = window.document.querySelector(&#x27;.custom-container&#x27;);
-renderControlsToDOM(webViewerInstance, customContainer)</pre>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".renderFullscreenButton"><span class="type-signature">&lt;static> </span>renderFullscreenButton(instance, video, customContainer)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Mounts the fullscreen react component into the passed in container.
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>instance</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The WebViewer instance</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>video</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The video object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>customContainer</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">A container element, e.g. a div.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">const customContainer = window.document.querySelector(&#x27;.custom-container&#x27;);
-const video = webViewerInstance.docViewer.getDocument().getVideo();
-renderFullscreenButton(webViewerInstance, video, customContainer)</pre>
 
 
     
@@ -1953,7 +1517,10 @@ This needs to be called after the 'documentLoaded' event of webviewer <a href="h
     <pre class="sunlight-highlight-javascript">WebViewer(...)
     .then(function(instance) {
       const license = &#x27;---- Insert commercial license key here after purchase ----&#x27;;
-      const { loadVideo, setVideoWatermark } = await initializeVideoViewer(instance, license);
+      const {
+        loadVideo,
+        setVideoWatermark,
+      } = await initializeVideoViewer(instance, { license });
 
       loadVideo(&#x27;https://www.mydomain.com/my_video_url&#x27;);
       setVideoWatermark({
@@ -2013,9 +1580,9 @@ This needs to be called after the 'documentLoaded' event of webviewer <a href="h
 
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a>
 	
-		on 2021-05-19T17:25:09-07:00
+		on 2021-06-09T13:55:58-07:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
