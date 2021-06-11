@@ -110,7 +110,10 @@ const App = () => {
         loadVideo
       } = await initializeVideoViewer(
         wvInstance,
-        license,
+        {
+          license,
+          AudioComponent: Waveform
+        },
       );
 
       loadVideo
