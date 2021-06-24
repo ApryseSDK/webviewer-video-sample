@@ -38,7 +38,7 @@ const App = () => {
         {
           license,
           AudioComponent: Waveform,
-          generatedPeaks: !process.env.DEMO ? null : demoPeaks
+          generatedPeaks: !process.env.DEMO ? null : demoPeaks // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
         }
       );
 
