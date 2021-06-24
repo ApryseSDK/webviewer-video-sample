@@ -7,7 +7,7 @@ const resolve = require('resolve');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
@@ -133,19 +133,9 @@ module.exports = {
   },
   optimization: {
     minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          parse: {
-            // we want terser to parse ecma 8 code. However, we don't want it
-            // to apply any minfication steps that turns valid ecma 5 code
-            // into invalid ecma 5 code. This is why the 'compress' and 'output'
-            // sections only apply transformations that are ecma 5 safe
-            // https://github.com/facebook/create-react-app/pull/4234
-            ecma: 8,
-          },
+      new UglifyJsPlugin({
+        uglifyOptions: {
           compress: {
-            ecma: 5,
-            warnings: false,
             // Disabled because of an issue with Uglify breaking seemingly valid code:
             // https://github.com/facebook/create-react-app/issues/2376
             // Pending further investigation:
@@ -157,16 +147,15 @@ module.exports = {
             // https://github.com/terser-js/terser/issues/120
             inline: 2,
           },
-          mangle: {
-            safari10: true,
-          },
+          mangle: true,
           output: {
-            ecma: 5,
             comments: false,
             // Turned on because emoji and regex is not minified properly using default
             // https://github.com/facebook/create-react-app/issues/2488
             ascii_only: true,
           },
+          warnings: false,
+          keep_fnames: true,
         },
         // Use multi-process parallel running to improve the build speed
         // Default number of concurrent runs: os.cpus().length - 1
@@ -225,7 +214,8 @@ module.exports = {
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
       // Added by KRISTIAN for aliasing react
-      // react: path.resolve(__dirname, '../node_modules/react')
+      react: path.resolve(__dirname, '../node_modules/react'),
+      'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
     },
     plugins: [
       // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -262,6 +252,7 @@ module.exports = {
             options: {
               formatter: require.resolve('react-dev-utils/eslintFormatter'),
               eslintPath: require.resolve('eslint'),
+              emitWarning: true,
 
             },
             loader: require.resolve('eslint-loader'),

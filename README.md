@@ -30,10 +30,7 @@ npm install
 
 ```
 npm start
-npm run start-server
 ```
-
-`npm run start-server` is required for saving of annotations.
 
 ## Build
 
@@ -41,16 +38,14 @@ Run `npm run build` to build the project. The build artifacts will be stored in 
 
 To test the build directory locally you can use [serve](https://www.npmjs.com/package/serve) or [http-server](https://www.npmjs.com/package/http-server). In case of serve, by default it strips the .html extension stripped from paths. We added serve.json configuration to disable cleanUrls option.
 
+## Documentation
+
+[API documentation](https://www.pdftron.com/api/video/)
+
 ## WebViewer APIs
 
-See @pdftron/webviewer [API documentation](https://www.pdftron.com/documentation/web/guides/ui/apis).<br/>
-See @pdftron/webviewer-video [API documentation](https://www.pdftron.com/api/web/module-@pdftron_webviewer-video.html).<br/>
-See Video Class [API documentation](https://www.pdftron.com/api/web/Video.html).
-
-## Contributing
-
-See [contributing](./CONTRIBUTING.md).
+See @pdftron/webviewer [API documentation](https://www.pdftron.com/documentation/web/guides/ui/apis).
 
 ## License
 
-See [license](./LICENSE).
+WebViewer Video will run in trial mode until a license is provided. For more information on licensing, please visit our [website](https://www.pdftron.com/licensing/)
