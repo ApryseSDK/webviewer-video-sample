@@ -50,8 +50,7 @@ const App = () => {
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      // A unique fileId should be generated for each url for audio caching to work properly
-      loadVideo(videoUrl, { fileId: 'testId' });
+      loadVideo(videoUrl);
       initializeHeader(instance);
 
       const { docViewer } = instance;
@@ -125,8 +124,7 @@ const App = () => {
       (
         url,
         {
-          fileName: file.name,
-          fileId: file.name,
+          fileName: file.name
         }
       );
       // TODO: Notespanel needs to be delayed when opening. Not sure why.
