@@ -11,8 +11,6 @@ import {
   demoXFDFString,
 } from './constants/demo-vars';
 
-const DOCUMENT_ID = 'video';
-
 const App = () => {
   const viewer = useRef(null);
   const inputFile = useRef(null);
@@ -33,6 +31,7 @@ const App = () => {
     ).then(async instance => {
       const {
         loadVideo,
+        getVideo,
       } = await initializeVideoViewer(
         instance,
         {
@@ -58,46 +57,11 @@ const App = () => {
 
       // Load saved annotations
       docViewer.on('documentLoaded', async () => {
-        const document = docViewer.getDocument();
-        let video;
-        let xfdfString;
-
-        if (document.type === 'video') {
-          video = document.getVideo();
-        }
-        
-        if (process.env.DEMO && document.type !== 'audio') {
-          xfdfString = demoXFDFString;
-        } else if (!process.env.DEMO) {
-          const loadXfdfString = documentId => {
-            return new Promise(resolve => {
-              fetch(`/server/annotationHandler.js?documentId=${documentId}`, {
-                method: 'GET'
-              }).then(response => {
-                if (response.status === 200) {
-                  response.text()
-                    .then(xfdfString => {
-                      resolve(xfdfString);
-                    });
-                } else if (response.status === 204) {
-                  console.warn(`Found no content in xfdf file /server/annotationHandler.js?documentId=${documentId}`);
-                  resolve('');
-                } else {
-                  console.warn(`Something went wrong trying to load xfdf file /server/annotationHandler.js?documentId=${documentId}`);
-                  console.warn(`Response status ${response.status}`);
-                  resolve('');
-                }
-              });
-            });
-          };
-
-          // Make a GET request to get XFDF string
-          xfdfString = await loadXfdfString(DOCUMENT_ID);
-        }
-
-        if (xfdfString) {
+        if (process.env.DEMO) {
+          const video = getVideo();
+          const xfdfString = demoXFDFString;
           await annotManager.importAnnotations(xfdfString);
-          video && video.updateAnnotationsToTime(0);
+          video.updateAnnotationsToTime(0);
         }
       });
     });
@@ -124,7 +88,7 @@ const App = () => {
       (
         url,
         {
-          fileName: file.name
+          fileName: file.name,
         }
       );
       // TODO: Notespanel needs to be delayed when opening. Not sure why.
@@ -140,7 +104,7 @@ const App = () => {
       );
 
       loadAudio(url);
-      
+
       setTimeout(() => {
         wvInstance.openElements('notesPanel');
       });
