@@ -57,7 +57,7 @@ const App = () => {
 
       // Load saved annotations
       const onDocumentLoaded = async () => {
-        if (true) {
+        if (process.env.DEMO) {
           const video = getVideo();
           const xfdfString = demoXFDFString;
           await annotManager.importAnnotations(xfdfString);
