@@ -2,10 +2,10 @@ import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
 import { initializeVideoViewer } from '@pdftron/webviewer-video';
 import './App.css';
-import {
-  Waveform,
-  initializeAudioViewer
-} from '@pdftron/webviewer-audio';
+// import {
+//   Waveform,
+//   initializeAudioViewer
+// } from '@pdftron/webviewer-audio';
 import {
   demoPeaks,
   demoXFDFString,
@@ -15,6 +15,7 @@ const App = () => {
   const viewer = useRef(null);
   const inputFile = useRef(null);
   const [ wvInstance, setInstance ] = useState(null);
+  const [ wvLoadVideo, setWvLoadVideo ] = useState(null);
   const license = `---- Insert commercial license key here after purchase ----`;
   const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
 
@@ -36,7 +37,8 @@ const App = () => {
         instance,
         {
           license,
-          AudioComponent: Waveform,
+          // AudioComponent: Waveform,
+          showFrames: true,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
         }
       );
@@ -45,6 +47,7 @@ const App = () => {
       instance.setTheme('dark');
 
       setInstance(instance);
+      setWvLoadVideo( () => loadVideo);
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
@@ -74,18 +77,25 @@ const App = () => {
     // Seamlessly switch between PDFs and videos.
     // Can also detect by specific video file types (ie. mp4, ogg, etc.)
     if (file.type.includes('video')) {
-      const {
-        loadVideo
-      } = await initializeVideoViewer(
-        wvInstance,
-        {
-          license,
-          AudioComponent: Waveform
-        },
-      );
+      // const {
+      //   loadVideo
+      // } = await initializeVideoViewer(
+      //   wvInstance,
+      //   {
+      //     license,
+      //     // AudioComponent: Waveform,
+      //     showFrames: true,
+      //   },
+      // );
 
-      loadVideo
-      (
+      // loadVideo
+      // (
+      //   url,
+      //   {
+      //     fileName: file.name,
+      //   }
+      // );
+      wvLoadVideo(
         url,
         {
           fileName: file.name,
@@ -96,18 +106,18 @@ const App = () => {
         wvInstance.openElements('notesPanel');
       });
     } else if (file.type.includes('audio')) {
-      const {
-        loadAudio,
-      } = await initializeAudioViewer(
-        wvInstance,
-        { license },
-      );
+      // const {
+      //   loadAudio,
+      // } = await initializeAudioViewer(
+      //   wvInstance,
+      //   { license },
+      // );
 
-      loadAudio(url);
+      // loadAudio(url);
 
-      setTimeout(() => {
-        wvInstance.openElements('notesPanel');
-      });
+      // setTimeout(() => {
+      //   wvInstance.openElements('notesPanel');
+      // });
     } else {
       wvInstance.setToolMode('AnnotationEdit');
       wvInstance.loadDocument(url);
