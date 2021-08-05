@@ -44,6 +44,8 @@ const App = () => {
       instance.openElements('notesPanel');
       instance.setTheme('dark');
 
+      console.log('app1', self.crossOriginIsolated);
+
       setInstance(instance);
 
       // Load a video at a specific url. Can be a local or public link
