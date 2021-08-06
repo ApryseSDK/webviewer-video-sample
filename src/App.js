@@ -44,8 +44,6 @@ const App = () => {
       instance.openElements('notesPanel');
       instance.setTheme('dark');
 
-      console.log('app1', self.crossOriginIsolated);
-
       setInstance(instance);
 
       // Load a video at a specific url. Can be a local or public link
@@ -58,14 +56,21 @@ const App = () => {
       const annotManager = docViewer.getAnnotationManager();
 
       // Load saved annotations
-      docViewer.on('documentLoaded', async () => {
+      const onDocumentLoaded = async () => {
         if (process.env.DEMO) {
           const video = getVideo();
           const xfdfString = demoXFDFString;
           await annotManager.importAnnotations(xfdfString);
           video.updateAnnotationsToTime(0);
         }
-      });
+      };
+
+      // Load saved annotations
+      docViewer.addEventListener('documentLoaded', onDocumentLoaded);
+
+      return () => {
+        docViewer.removeEventListener('documentLoaded', onDocumentLoaded);
+      };
     });
   }, [license]);
 
