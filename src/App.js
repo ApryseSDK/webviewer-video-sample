@@ -87,7 +87,7 @@ const App = () => {
         wvInstance,
         {
           license,
-          AudioComponent: Waveform
+          //AudioComponent: Waveform
         },
       );
 
