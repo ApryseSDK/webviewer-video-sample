@@ -2,6 +2,7 @@
 
 # WebViewer
 public/webviewer
+public/wv-video-injection.js
 
 # dependencies
 /node_modules
