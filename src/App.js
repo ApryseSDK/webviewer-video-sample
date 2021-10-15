@@ -14,7 +14,7 @@ import {
 const App = () => {
   const viewer = useRef(null);
   const inputFile = useRef(null);
-  const [state, setState] = useState({instance: null, videoInstance: null, audioInstance: null})
+  const [state, setState] = useState({instance: null, videoInstance: null})
   const license = `---- Insert commercial license key here after purchase ----`;
   const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
 
@@ -38,17 +38,10 @@ const App = () => {
         }
       );
 
-      const audioInstance = await initializeAudioViewer(
-        instance,
-        {
-          license
-        }
-      );
-
       instance.openElements('notesPanel');
       instance.setTheme('dark');
 
-      setState({instance, videoInstance, audioInstance});
+      setState({instance, videoInstance});
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
@@ -81,7 +74,7 @@ const App = () => {
   const onFileChange = async (event) => {
     const file = event.target.files[0];
     const url = URL.createObjectURL(file);
-    const { instance, videoInstance, audioInstance } = state;
+    const { instance, videoInstance } = state;
 
     // Seamlessly switch between PDFs and videos.
     // Can also detect by specific video file types (ie. mp4, ogg, etc.)
@@ -92,7 +85,11 @@ const App = () => {
         instance.openElements('notesPanel');
       });
     } else if (file.type.includes('audio')) {
-      audioInstance.loadAudio(url);
+      const { loadAudio } = await initializeAudioViewer(
+        instance,
+        { license },
+      );
+      loadAudio(url);
 
       setTimeout(() => {
         instance.openElements('notesPanel');
