@@ -14,7 +14,7 @@ import {
 const App = () => {
   const viewer = useRef(null);
   const inputFile = useRef(null);
-  const [state, setState] = useState({instance: null, videoInstance: null})
+  const [state, setState] = useState({instance: null, videoInstance: null, audioInstance: null})
   const license = `---- Insert commercial license key here after purchase ----`;
   const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
 
@@ -29,6 +29,11 @@ const App = () => {
       },
       viewer.current,
     ).then(async instance => {
+      const audioInstance = await initializeAudioViewer(
+        instance,
+        { license },
+      );
+
       const videoInstance = await initializeVideoViewer(
         instance,
         {
@@ -41,7 +46,7 @@ const App = () => {
       instance.openElements('notesPanel');
       instance.setTheme('dark');
 
-      setState({instance, videoInstance});
+      setState({instance, videoInstance, audioInstance});
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
@@ -74,7 +79,7 @@ const App = () => {
   const onFileChange = async (event) => {
     const file = event.target.files[0];
     const url = URL.createObjectURL(file);
-    const { instance, videoInstance } = state;
+    const { instance, videoInstance, audioInstance } = state;
 
     // Seamlessly switch between PDFs and videos.
     // Can also detect by specific video file types (ie. mp4, ogg, etc.)
@@ -85,11 +90,7 @@ const App = () => {
         instance.openElements('notesPanel');
       });
     } else if (file.type.includes('audio')) {
-      const { loadAudio } = await initializeAudioViewer(
-        instance,
-        { license },
-      );
-      loadAudio(url);
+      audioInstance.loadAudio(url);
 
       setTimeout(() => {
         instance.openElements('notesPanel');
@@ -113,7 +114,7 @@ const App = () => {
         <path d="M20 18H4V11H2V18C2 19.103 2.897 20 4 20H20C21.103 20 22 19.103 22 18V11H20V18Z" fill="currentColor"/>
         </svg>`,
         title: 'Load file',
-        dataElement: 'video-downloadFileButton',
+        dataElement: 'audio-loadFileButton',
         onClick: () => {
           inputFile.current.click();
         }
