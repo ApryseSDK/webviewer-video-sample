@@ -31,7 +31,7 @@
       ],
       "headers": [
         {
-          "source": "index.html",
+          "source": "**",
           "headers": [
             {
               "key": "Cross-Origin-Opener-Policy",
