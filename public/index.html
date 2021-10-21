@@ -27,6 +27,15 @@
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
+    <script>
+      const ua = navigator.userAgent;
+      const isIE = ua.indexOf('MSIE') > -1 || ua.indexOf('Trident') > -1;
+      if (isIE) {
+        let div = document.createElement("div");
+        div.innerHTML = '<p style="text-align: center">Hi there. You’re using an outdated browser.</p><p style="text-align: center">For a safer and faster user experience use a modern browser like Chrome, Firefox, Safari, or Edge.</p>';
+        document.body.appendChild(div);
+      }
+    </script>
     <div id="root"></div>
     <!--
       This HTML file is a template.
