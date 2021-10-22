@@ -14,7 +14,7 @@ import {
 const App = () => {
   const viewer = useRef(null);
   const inputFile = useRef(null);
-  const [state, setState] = useState({instance: null, videoInstance: null, audioInstance: null})
+  const [state, setState] = useState({ instance: null, videoInstance: null, audioInstance: null });
   const license = `---- Insert commercial license key here after purchase ----`;
   const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
 
@@ -46,7 +46,7 @@ const App = () => {
       instance.openElements('notesPanel');
       instance.setTheme('dark');
 
-      setState({instance, videoInstance, audioInstance});
+      setState({ instance, videoInstance, audioInstance });
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
@@ -76,7 +76,7 @@ const App = () => {
     });
   }, [license]);
 
-  const onFileChange = async (event) => {
+  const onFileChange = async event => {
     const file = event.target.files[0];
     const url = URL.createObjectURL(file);
     const { instance, videoInstance, audioInstance } = state;
@@ -99,7 +99,7 @@ const App = () => {
       instance.setToolMode('AnnotationEdit');
       instance.loadDocument(url);
     }
-  }
+  };
 
   function initializeHeader(instance) {
     const { setHeaderItems } = instance;
