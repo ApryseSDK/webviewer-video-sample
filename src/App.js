@@ -15,20 +15,18 @@ const App = () => {
   const viewer = useRef(null);
   const inputFile = useRef(null);
   const [state, setState] = useState({ instance: null, videoInstance: null, audioInstance: null });
-  const license = `---- Insert commercial license key here after purchase ----`;
-  const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
 
-  // if using a class, equivalent of componentDidMount
   useEffect(() => {
     WebViewer(
       {
         path: '/webviewer/lib',
         selectAnnotationOnCreation: true,
-        // Fix for ie11. It can't switch to dark mode so we do it manually.
-        ...(window.document.documentMode && { css: '../../../styles.css' }),
       },
       viewer.current,
     ).then(async instance => {
+      const license = `---- Insert commercial license key here after purchase ----`;
+      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+
       const audioInstance = await initializeAudioViewer(
         instance,
         { license },
@@ -43,7 +41,6 @@ const App = () => {
         }
       );
 
-      instance.openElements('notesPanel');
       instance.setTheme('dark');
 
       setState({ instance, videoInstance, audioInstance });
@@ -64,17 +61,14 @@ const App = () => {
           const xfdfString = demoXFDFString;
           await annotManager.importAnnotations(xfdfString);
           video.updateAnnotationsToTime(0);
+          docViewer.removeEventListener('documentLoaded', onDocumentLoaded);
         }
       };
 
       // Load saved annotations
       docViewer.addEventListener('documentLoaded', onDocumentLoaded);
-
-      return () => {
-        docViewer.removeEventListener('documentLoaded', onDocumentLoaded);
-      };
     });
-  }, [license]);
+  }, []);
 
   const onFileChange = async event => {
     const file = event.target.files[0];
