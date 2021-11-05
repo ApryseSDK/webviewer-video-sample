@@ -20,7 +20,6 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
-        selectAnnotationOnCreation: true,
       },
       viewer.current,
     ).then(async instance => {
