@@ -21,6 +21,7 @@ const App = () => {
       {
         path: '/webviewer/lib',
         autoFocusReplyInputOnAnnotationSelect: false,
+        selectAnnotationOnCreation: true,
       },
       viewer.current,
     ).then(async instance => {
