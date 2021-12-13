@@ -11,29 +11,117 @@ import {
   demoXFDFString,
 } from './constants/demo-vars';
 
+// Maybe convert to global state later
+let globalInstance1;
+let globalInstance2;
+
 const App = () => {
-  const viewer = useRef(null);
+  const parentViewer = useRef(null);
+  const viewer1 = useRef(null);
+  const viewer2 = useRef(null);
   const inputFile = useRef(null);
-  const [state, setState] = useState({ instance: null, videoInstance: null, audioInstance: null });
+  const [state, setState] = useState({ instance: null, videoInstance1: null, videoInstance2: null, audioInstance1: null, audioInstance2: null });
 
   useEffect(() => {
+    const doStuffForCompare = (instance, videoInstance) => {
+      instance.iframeWindow.frameElement.style.position = 'unset';
+    
+      instance.disableElements([
+        //'header',
+        'toggleNotesButton',
+        'ribbons',
+        'menuButton',
+        'audio-loadFileButton',
+        'MergeAnnotationsTool',
+        'toolsHeader',
+        'notesPanel',
+      ]);
+    
+      const { setHeaderItems } = instance;
+      let isSynced = false;
+    
+      // Add save annotations button
+      setHeaderItems(header => {
+        // Add upload file button
+        header.push({
+          type: 'actionButton',
+          img: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M9 6H4C3.44772 6 3 6.44772 3 7V17C3 17.5523 3.44772 18 4 18H9V16H5V8H9V6ZM15 16H19V8H15V6H20C20.5523 6 21 6.44772 21 7V17C21 17.5523 20.5523 18 20 18H15V16Z" fill="currentColor"/>
+          <path d="M12.5 7L8 10.75V3.25L12.5 7Z" fill="currentColor"/>
+          <path d="M11.25 17L15.75 20.75V13.25L11.25 17Z" fill="currentColor"/>
+          </svg>`,
+          title: 'Sync Playback',
+          dataElement: 'syncPlayback',
+          onClick: () => {
+            isSynced = !isSynced;
+
+            const onPlay = () => {
+              globalInstance1.getVideo().getElement().play();
+              globalInstance2.getVideo().getElement().play();
+            };
+
+            const onPause = () => {
+              globalInstance1.getVideo().getElement().pause();
+              globalInstance2.getVideo().getElement().pause();
+            };
+
+            const onSeeked = () => {
+              globalInstance1.getVideo().getElement().pause();
+              globalInstance2.getVideo().getElement().pause();
+
+              if (globalInstance1.getVideo().getElement().currentTime !== videoInstance.getVideo().getElement().currentTime) {
+                globalInstance1.getVideo().goToTime(videoInstance.getVideo().getElement().currentTime);
+              }
+
+              if (globalInstance2.getVideo().getElement().currentTime !== videoInstance.getVideo().getElement().currentTime) {
+                globalInstance2.getVideo().goToTime(videoInstance.getVideo().getElement().currentTime);
+              }
+            };
+
+            if (isSynced) {
+              videoInstance.getVideo().getElement().pause();
+
+              if (videoInstance === globalInstance1) {
+                globalInstance2.getVideo().goToTime(videoInstance.getVideo().getElement().currentTime);
+                videoInstance.getVideo().getElement().onplay = onPlay;
+                globalInstance2.getVideo().getElement().onplay = onPlay;
+                videoInstance.getVideo().getElement().onpause = onPause;
+                globalInstance2.getVideo().getElement().onpause = onPause;
+                videoInstance.getVideo().getElement().onseeked = onSeeked;
+                globalInstance2.getVideo().getElement().onseeked = onSeeked;
+              } else {
+                globalInstance1.getVideo().goToTime(videoInstance.getVideo().getElement().currentTime);
+                videoInstance.getVideo().getElement().onplay = onPlay;
+                globalInstance1.getVideo().getElement().onplay = onPlay;
+                videoInstance.getVideo().getElement().onpause = onPause;
+                globalInstance1.getVideo().getElement().onpause = onPause;
+                videoInstance.getVideo().getElement().onseeked = onSeeked;
+                globalInstance1.getVideo().getElement().onseeked = onSeeked;
+              }
+            }
+          }
+        });
+      });
+    };
+
+    // First Compare
     WebViewer(
       {
         path: '/webviewer/lib',
         autoFocusReplyInputOnAnnotationSelect: false,
         selectAnnotationOnCreation: true,
       },
-      viewer.current,
+      viewer1.current,
     ).then(async instance => {
       const license = `---- Insert commercial license key here after purchase ----`;
       const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
 
-      const audioInstance = await initializeAudioViewer(
+      const audioInstance1 = await initializeAudioViewer(
         instance,
         { license },
       );
 
-      const videoInstance = await initializeVideoViewer(
+      const videoInstance1 = await initializeVideoViewer(
         instance,
         {
           license,
@@ -43,14 +131,16 @@ const App = () => {
       );
 
       instance.setTheme('dark');
+      doStuffForCompare(instance, videoInstance1);
 
-      setState({ instance, videoInstance, audioInstance });
+      setState({ instance, videoInstance1, audioInstance1 });
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      videoInstance.loadVideo(videoUrl);
+      videoInstance1.loadVideo(videoUrl);
       initializeHeader(instance);
+      globalInstance1 = videoInstance1;
 
       const { docViewer } = instance;
       const annotManager = docViewer.getAnnotationManager();
@@ -58,7 +148,7 @@ const App = () => {
       if (process.env.DEMO) {
         // Load saved annotations
         const onDocumentLoaded = async () => {
-          const video = videoInstance.getVideo();
+          const video = videoInstance1.getVideo();
           const xfdfString = demoXFDFString;
           await annotManager.importAnnotations(xfdfString);
           video.updateAnnotationsToTime(0);
@@ -67,6 +157,98 @@ const App = () => {
         docViewer.addEventListener('documentLoaded', onDocumentLoaded);
       }
     });
+
+    // Second Compare
+    WebViewer(
+      {
+        path: '/webviewer/lib',
+        autoFocusReplyInputOnAnnotationSelect: false,
+        selectAnnotationOnCreation: true,
+      },
+      viewer2.current,
+    ).then(async instance => {
+      const license = `---- Insert commercial license key here after purchase ----`;
+      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+
+      const audioInstance2 = await initializeAudioViewer(
+        instance,
+        { license },
+      );
+
+      const videoInstance2 = await initializeVideoViewer(
+        instance,
+        {
+          license,
+          AudioComponent: Waveform,
+          generatedPeaks: !process.env.DEMO ? null : demoPeaks // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
+        }
+      );
+
+      instance.setTheme('dark');
+      doStuffForCompare(instance, videoInstance2);
+
+      setState({ instance, videoInstance2, audioInstance2 });
+      console.log('bsdf');
+
+      // Load a video at a specific url. Can be a local or public link
+      // If local it needs to be relative to lib/ui/index.html.
+      // Or at the root. (eg '/video.mp4')
+      videoInstance2.loadVideo(videoUrl);
+      globalInstance2 = videoInstance2;
+      initializeHeader(instance);
+
+      const { docViewer } = instance;
+      const annotManager = docViewer.getAnnotationManager();
+
+      if (process.env.DEMO) {
+        // Load saved annotations
+        const onDocumentLoaded = async () => {
+          const video = videoInstance2.getVideo();
+          const xfdfString = demoXFDFString;
+          await annotManager.importAnnotations(xfdfString);
+          video.updateAnnotationsToTime(0);
+          docViewer.removeEventListener('documentLoaded', onDocumentLoaded);
+        };
+        docViewer.addEventListener('documentLoaded', onDocumentLoaded);
+      }
+    });
+
+    // // Parent 
+    // WebViewer(
+    //   {
+    //     path: '/webviewer/lib',
+    //     autoFocusReplyInputOnAnnotationSelect: false,
+    //     selectAnnotationOnCreation: true,
+    //   },
+    //   parentViewer.current,
+    // ).then(async instance => {
+    //   const license = `---- Insert commercial license key here after purchase ----`;
+
+    //   const audioInstance2 = await initializeAudioViewer(
+    //     instance,
+    //     { license },
+    //   );
+
+    //   const videoInstance2 = await initializeVideoViewer(
+    //     instance,
+    //     {
+    //       license,
+    //     }
+    //   );
+
+    //   instance.setTheme('dark');
+    //   doStuffForCompare(instance, videoInstance2);
+
+    //   setState({ instance, videoInstance2, audioInstance2 });
+    //   console.log('bsdf');
+
+    //   // Load a video at a specific url. Can be a local or public link
+    //   // If local it needs to be relative to lib/ui/index.html.
+    //   // Or at the root. (eg '/video.mp4')
+    //   videoInstance2.loadVideo(null);
+    //   globalInstance2 = videoInstance2;
+    //   initializeHeader(instance);
+    // });
   }, []);
 
   const onFileChange = async event => {
@@ -80,7 +262,7 @@ const App = () => {
       videoInstance.loadVideo(url, { fileName: file.name, });
       // TODO: Notespanel needs to be delayed when opening. Not sure why.
       setTimeout(() => {
-        instance.openElements('notesPanel');
+        //instance.openElements('notesPanel');
       });
     } else if (file.type.includes('audio')) {
       audioInstance.loadAudio(url);
@@ -118,7 +300,18 @@ const App = () => {
   return (
     <div className="App">
       <input type="file" hidden ref={inputFile} onChange={onFileChange} value=""/>
-      <div className="webviewer" ref={viewer}/>
+      {/* <div className="webviewer" ref={viewer}/> */}
+
+      {/* <div className="webviewer-wrapper">
+        <div className="webviewer" ref={parentViewer}/>
+      </div> */}
+
+      <div className="webviewer-wrapper">
+        <div className="webviewer" ref={viewer1}/>
+      </div>
+      <div className="webviewer-wrapper">
+        <div className="webviewer" ref={viewer2}/>
+      </div>
     </div>
   );
 };
