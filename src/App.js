@@ -27,7 +27,6 @@ const App = () => {
       instance.iframeWindow.frameElement.style.position = 'unset';
     
       instance.disableElements([
-        //'header',
         'toggleNotesButton',
         'ribbons',
         'menuButton',
@@ -188,7 +187,6 @@ const App = () => {
       doStuffForCompare(instance, videoInstance2);
 
       setState({ instance, videoInstance2, audioInstance2 });
-      console.log('bsdf');
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
@@ -214,41 +212,39 @@ const App = () => {
     });
 
     // // Parent 
-    // WebViewer(
-    //   {
-    //     path: '/webviewer/lib',
-    //     autoFocusReplyInputOnAnnotationSelect: false,
-    //     selectAnnotationOnCreation: true,
-    //   },
-    //   parentViewer.current,
-    // ).then(async instance => {
-    //   const license = `---- Insert commercial license key here after purchase ----`;
+    WebViewer(
+      {
+        path: '/webviewer/lib',
+        autoFocusReplyInputOnAnnotationSelect: false,
+        selectAnnotationOnCreation: true,
+      },
+      parentViewer.current,
+    ).then(async instance => {
+      const license = `---- Insert commercial license key here after purchase ----`;
 
-    //   const audioInstance2 = await initializeAudioViewer(
-    //     instance,
-    //     { license },
-    //   );
+      const audioInstance2 = await initializeAudioViewer(
+        instance,
+        { license },
+      );
 
-    //   const videoInstance2 = await initializeVideoViewer(
-    //     instance,
-    //     {
-    //       license,
-    //     }
-    //   );
+      const videoInstance2 = await initializeVideoViewer(
+        instance,
+        {
+          license,
+        }
+      );
 
-    //   instance.setTheme('dark');
-    //   doStuffForCompare(instance, videoInstance2);
+      instance.setTheme('dark');
 
-    //   setState({ instance, videoInstance2, audioInstance2 });
-    //   console.log('bsdf');
+      //setState({ instance, videoInstance2, audioInstance2 });
 
-    //   // Load a video at a specific url. Can be a local or public link
-    //   // If local it needs to be relative to lib/ui/index.html.
-    //   // Or at the root. (eg '/video.mp4')
-    //   videoInstance2.loadVideo(null);
-    //   globalInstance2 = videoInstance2;
-    //   initializeHeader(instance);
-    // });
+      // Load a video at a specific url. Can be a local or public link
+      // If local it needs to be relative to lib/ui/index.html.
+      // Or at the root. (eg '/video.mp4')
+      videoInstance2.loadVideo(null);
+      globalInstance2 = videoInstance2;
+      initializeHeader(instance);
+    });
   }, []);
 
   const onFileChange = async event => {
@@ -302,14 +298,14 @@ const App = () => {
       <input type="file" hidden ref={inputFile} onChange={onFileChange} value=""/>
       {/* <div className="webviewer" ref={viewer}/> */}
 
-      {/* <div className="webviewer-wrapper">
+      <div className="webviewer-parent-wrapper">
         <div className="webviewer" ref={parentViewer}/>
-      </div> */}
+      </div>
 
-      <div className="webviewer-wrapper">
+      <div className="webviewer-compare-wrapper">
         <div className="webviewer" ref={viewer1}/>
       </div>
-      <div className="webviewer-wrapper">
+      <div className="webviewer-compare-wrapper">
         <div className="webviewer" ref={viewer2}/>
       </div>
     </div>
