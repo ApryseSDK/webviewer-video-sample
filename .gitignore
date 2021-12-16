@@ -2,6 +2,7 @@
 
 # WebViewer
 public/webviewer
+public/ffprobe
 public/wv-video-injection.js
 
 # dependencies
