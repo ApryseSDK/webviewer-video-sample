@@ -27,13 +27,11 @@ const App = () => {
       instance.iframeWindow.frameElement.style.position = 'unset';
     
       instance.disableElements([
-        'toggleNotesButton',
         'ribbons',
         'menuButton',
         'audio-loadFileButton',
         'MergeAnnotationsTool',
         'toolsHeader',
-        'notesPanel',
       ]);
     
       const { setHeaderItems } = instance;
@@ -59,6 +57,7 @@ const App = () => {
               globalInstance2.getVideo().getElement().play();
             };
 
+            // TOOD: onPause sync up frames, also move sync button to parent webviewer
             const onPause = () => {
               globalInstance1.getVideo().getElement().pause();
               globalInstance2.getVideo().getElement().pause();
@@ -131,6 +130,15 @@ const App = () => {
 
       instance.setTheme('dark');
       doStuffForCompare(instance, videoInstance1);
+      instance.disableElements([
+        'toggleNotesButton',
+        'ribbons',
+        'menuButton',
+        'audio-loadFileButton',
+        'MergeAnnotationsTool',
+        'toolsHeader',
+        'notesPanel',
+      ]);
 
       setState({ instance, videoInstance1, audioInstance1 });
 
@@ -211,7 +219,7 @@ const App = () => {
       }
     });
 
-    // // Parent 
+    // Parent 
     WebViewer(
       {
         path: '/webviewer/lib',
@@ -292,6 +300,10 @@ const App = () => {
       });
     });
   }
+
+  // TODO:
+  // When opening notes panel either copy elements into document content container
+  // Have notes panel open on right side
 
   return (
     <div className="App">
