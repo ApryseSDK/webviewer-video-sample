@@ -10,6 +10,7 @@ import {
   demoPeaks,
   demoXFDFString,
 } from './constants/demo-vars';
+import { initCompareViewer } from './functions/initCompareViewer'
 
 // Maybe convert to global state later
 let globalInstance1;
@@ -20,22 +21,103 @@ const App = () => {
   const viewer1 = useRef(null);
   const viewer2 = useRef(null);
   const inputFile = useRef(null);
-  const [state, setState] = useState({ instance: null, videoInstance1: null, videoInstance2: null, audioInstance1: null, audioInstance2: null });
+  const compareContainer = useRef(null);
+  const overlayWrapper = useRef(null);
+  const [state, setState] = useState({
+    parentInstance: null,
+    instance1: null,
+    instance2: null,
+    videoInstance1: null,
+    videoInstance2: null,
+    audioInstance1: null,
+    audioInstance2: null,
+  });
+
+  const [ activeInstance, setActiveInstance ] = useState(1);
 
   useEffect(() => {
-    const doStuffForCompare = (instance, videoInstance) => {
-      instance.iframeWindow.frameElement.style.position = 'unset';
-    
-      instance.disableElements([
-        'ribbons',
-        'menuButton',
-        'audio-loadFileButton',
-        'MergeAnnotationsTool',
-        'toolsHeader',
+    const setDisplayTheme = e => {
+      const { instance1, instance2 } = state;
+      instance1.UI.setTheme(e.detail);
+      instance2.UI.setTheme(e.detail);
+    };
+
+    const onToolUpdate = e => {
+      const instance1ToolModeMap = instance1.docViewer.getToolModeMap();
+      const instance2ToolModeMap = instance2.docViewer.getToolModeMap();
+
+      instance1ToolModeMap[e.name] && instance1ToolModeMap[e.name].setStyles(e.defaults);
+      instance2ToolModeMap[e.name] && instance2ToolModeMap[e.name].setStyles(e.defaults);
+    };
+
+    const onToolModeUpdate = e => {
+      instance1.UI.setToolMode(e.name);
+      instance2.UI.setToolMode(e.name);
+    };
+
+    const onAnnotationChanged = instance => {
+      return async () => {
+        if (activeInstance === instance) {
+          const annotManager = instance === 1 
+            ? instance1.docViewer.getAnnotationManager()
+            : instance2.docViewer.getAnnotationManager();
+
+          let newAnnotations = await annotManager.exportAnnotations();
+          parentInstance.docViewer.getAnnotationManager().deleteAnnotations(parentInstance.docViewer.getAnnotationManager().getAnnotationsList());
+          parentInstance.docViewer.getAnnotationManager().importAnnotations(newAnnotations);
+        }
+      };
+    };
+
+    const onZoomUpdated = newZoomLevel => {
+      instance1.UI.setZoomLevel(newZoomLevel);
+      instance2.UI.setZoomLevel(newZoomLevel);
+    };
+
+    const setUpParentViewer = () => {
+      parentInstance.disableElements([
+        'downloadButton',
+        'selectToolButton',
       ]);
-    
-      const { setHeaderItems } = instance;
+
+      setDisplayTheme({ detail: parentInstance.UI.selectors.getActiveTheme() });
+      parentInstance.iframeWindow.addEventListener('themeChanged', setDisplayTheme);
+      parentInstance.docViewer.addEventListener('toolUpdated', onToolUpdate);
+      parentInstance.docViewer.addEventListener('toolModeUpdated', onToolModeUpdate);
+      parentInstance.docViewer.addEventListener('zoomUpdated', onZoomUpdated);
+      
+      const instance1AnnotManager = instance1.docViewer.getAnnotationManager();
+      const instance2AnnotManager = instance2.docViewer.getAnnotationManager();
+
+      instance1AnnotManager.addEventListener('annotationChanged', onAnnotationChanged(1));
+      instance2AnnotManager.addEventListener('annotationChanged', onAnnotationChanged(2));
+    };
+
+    const { instance1, instance2, parentInstance } = state;
+
+    if (parentInstance && instance1 && instance2) {
+      setUpParentViewer(parentInstance);
+
+      return () => {
+        parentInstance.iframeWindow.removeEventListener('themeChanged', setDisplayTheme);
+        parentInstance.docViewer.removeEventListener('toolUpdated', onToolUpdate);
+        parentInstance.docViewer.removeEventListener('toolModeUpdated', onToolModeUpdate);
+        parentInstance.docViewer.removeEventListener('zoomUpdated', onZoomUpdated);
+
+        const instance1AnnotManager = instance1.docViewer.getAnnotationManager();
+        const instance2AnnotManager = instance2.docViewer.getAnnotationManager();
+  
+        instance1AnnotManager.removeEventListener('annotationChanged', onAnnotationChanged(1));
+        instance2AnnotManager.removeEventListener('annotationChanged', onAnnotationChanged(2));
+      };
+    }
+  }, [state, activeInstance]);
+
+  useEffect(() => {
+    const createSyncButton = instance => {
+      const { setHeaderItems, updateElement } = instance;
       let isSynced = false;
+      let syncingVideo;
     
       // Add save annotations button
       setHeaderItems(header => {
@@ -48,54 +130,67 @@ const App = () => {
           <path d="M11.25 17L15.75 20.75V13.25L11.25 17Z" fill="currentColor"/>
           </svg>`,
           title: 'Sync Playback',
-          dataElement: 'syncPlayback',
+          dataElement: 'syncPlaybackButton',
           onClick: () => {
             isSynced = !isSynced;
+            updateElement('syncPlaybackButton', {
+              className: `${ isSynced ? 'active' : ''}`
+            });
 
-            const onPlay = () => {
-              globalInstance1.getVideo().getElement().play();
-              globalInstance2.getVideo().getElement().play();
+            const video1 = globalInstance1.getVideo();
+            const video2 = globalInstance2.getVideo();
+
+            // TODO: Move the mute elsewhere, should probably set up compare after initialization
+            video1.setMuted(true);
+            video2.setMuted(true);
+
+            const onPlay = video => {
+              return () => {
+                if (isSynced) {
+                  video.getElement().play();
+                }
+              };
             };
 
-            // TOOD: onPause sync up frames, also move sync button to parent webviewer
-            const onPause = () => {
-              globalInstance1.getVideo().getElement().pause();
-              globalInstance2.getVideo().getElement().pause();
+            const onPause = (pausedVideo, videoToPause) => {
+              return () => {
+                if (isSynced) {
+                  videoToPause.getElement().pause();
+                  videoToPause.goToTime(pausedVideo.getElement().currentTime);
+                }
+              };
             };
 
-            const onSeeked = () => {
-              globalInstance1.getVideo().getElement().pause();
-              globalInstance2.getVideo().getElement().pause();
+            const onSeeked = (seekedVideo, videoToSeek) => {
+              return () => {
+                if (!isSynced) {
+                  return;
+                }
 
-              if (globalInstance1.getVideo().getElement().currentTime !== videoInstance.getVideo().getElement().currentTime) {
-                globalInstance1.getVideo().goToTime(videoInstance.getVideo().getElement().currentTime);
-              }
+                if (syncingVideo !== videoToSeek) {
+                  syncingVideo = seekedVideo;
+                  
+                  seekedVideo.getElement().pause();
+                  videoToSeek.getElement().pause();
 
-              if (globalInstance2.getVideo().getElement().currentTime !== videoInstance.getVideo().getElement().currentTime) {
-                globalInstance2.getVideo().goToTime(videoInstance.getVideo().getElement().currentTime);
-              }
+                  videoToSeek.goToTime(seekedVideo.getElement().currentTime);
+                } else {
+                  syncingVideo = null;
+                }
+              };
             };
 
             if (isSynced) {
-              videoInstance.getVideo().getElement().pause();
+              video1.getElement().pause();
+              video2.getElement().pause();
 
-              if (videoInstance === globalInstance1) {
-                globalInstance2.getVideo().goToTime(videoInstance.getVideo().getElement().currentTime);
-                videoInstance.getVideo().getElement().onplay = onPlay;
-                globalInstance2.getVideo().getElement().onplay = onPlay;
-                videoInstance.getVideo().getElement().onpause = onPause;
-                globalInstance2.getVideo().getElement().onpause = onPause;
-                videoInstance.getVideo().getElement().onseeked = onSeeked;
-                globalInstance2.getVideo().getElement().onseeked = onSeeked;
-              } else {
-                globalInstance1.getVideo().goToTime(videoInstance.getVideo().getElement().currentTime);
-                videoInstance.getVideo().getElement().onplay = onPlay;
-                globalInstance1.getVideo().getElement().onplay = onPlay;
-                videoInstance.getVideo().getElement().onpause = onPause;
-                globalInstance1.getVideo().getElement().onpause = onPause;
-                videoInstance.getVideo().getElement().onseeked = onSeeked;
-                globalInstance1.getVideo().getElement().onseeked = onSeeked;
-              }
+              video2.goToTime(video1.getElement().currentTime);
+              video1.getElement().onplay = onPlay(video2);
+              video2.getElement().onplay = onPlay(video1);
+              video1.getElement().onpause = onPause(video1, video2);
+              video2.getElement().onpause = onPause(video2, video1);
+              video1.getElement().onseeked = onSeeked(video1, video2);
+              video2.getElement().onseeked = onSeeked(video2, video1);
             }
           }
         });
@@ -129,18 +224,9 @@ const App = () => {
       );
 
       instance.setTheme('dark');
-      doStuffForCompare(instance, videoInstance1);
-      instance.disableElements([
-        'toggleNotesButton',
-        'ribbons',
-        'menuButton',
-        'audio-loadFileButton',
-        'MergeAnnotationsTool',
-        'toolsHeader',
-        'notesPanel',
-      ]);
+      initCompareViewer(instance);
 
-      setState({ instance, videoInstance1, audioInstance1 });
+      setState(prevState => ({ ...prevState, instance1: instance, videoInstance1, audioInstance1 }));
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
@@ -156,6 +242,7 @@ const App = () => {
         // Load saved annotations
         const onDocumentLoaded = async () => {
           const video = videoInstance1.getVideo();
+          video.setMuted(true);
           const xfdfString = demoXFDFString;
           await annotManager.importAnnotations(xfdfString);
           video.updateAnnotationsToTime(0);
@@ -192,9 +279,9 @@ const App = () => {
       );
 
       instance.setTheme('dark');
-      doStuffForCompare(instance, videoInstance2);
+      initCompareViewer(instance);
 
-      setState({ instance, videoInstance2, audioInstance2 });
+      setState(prevState => ({ ...prevState, instance2: instance, videoInstance2, audioInstance2 }));
 
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
@@ -230,50 +317,70 @@ const App = () => {
     ).then(async instance => {
       const license = `---- Insert commercial license key here after purchase ----`;
 
-      const audioInstance2 = await initializeAudioViewer(
+      await initializeAudioViewer(
         instance,
         { license },
       );
 
-      const videoInstance2 = await initializeVideoViewer(
+      const videoInstance3 = await initializeVideoViewer(
         instance,
         {
           license,
+          showAnnotationPreview: false,
+          hideOutOfRangeAnnotations: false,
+          AudioComponent: Waveform,
         }
       );
 
       instance.setTheme('dark');
 
-      //setState({ instance, videoInstance2, audioInstance2 });
-
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      videoInstance2.loadVideo(null);
-      globalInstance2 = videoInstance2;
-      initializeHeader(instance);
+      videoInstance3.loadVideo('/input.mp4');
+      createSyncButton(instance);
+      setState(prevState => ({ ...prevState, parentInstance: instance }));
+
+      setTimeout(() => {
+        const parentContainer = instance.iframeWindow.document.querySelector('.document-content-container');
+
+        parentContainer.ontransitionstart = () => {
+          compareContainer.current.style.width = `${parentContainer.clientWidth}px`;
+        };
+
+        parentContainer.ontransitionend = () => {
+          compareContainer.current.style.width = `${parentContainer.clientWidth}px`;
+        };
+
+        instance.iframeWindow.onresize = () => {
+          compareContainer.current.style.width = `${parentContainer.clientWidth}px`;
+        };
+      }, 1000);
     });
   }, []);
 
   const onFileChange = async event => {
     const file = event.target.files[0];
     const url = URL.createObjectURL(file);
-    const { instance, videoInstance, audioInstance } = state;
+
+    let instance, videoInstance, audioInstance;
+
+    if (activeInstance === 1) {
+      instance = state.instance1;
+      videoInstance = state.videoInstance1;
+      audioInstance = state.audioInstance1;
+    } else {
+      instance = state.instance2;
+      videoInstance = state.videoInstance2;
+      audioInstance = state.audioInstance2;
+    }
 
     // Seamlessly switch between PDFs and videos.
     // Can also detect by specific video file types (ie. mp4, ogg, etc.)
     if (file.type.includes('video')) {
       videoInstance.loadVideo(url, { fileName: file.name, });
-      // TODO: Notespanel needs to be delayed when opening. Not sure why.
-      setTimeout(() => {
-        //instance.openElements('notesPanel');
-      });
     } else if (file.type.includes('audio')) {
       audioInstance.loadAudio(url);
-
-      setTimeout(() => {
-        instance.openElements('notesPanel');
-      });
     } else {
       instance.setToolMode('AnnotationEdit');
       instance.loadDocument(url);
@@ -285,7 +392,7 @@ const App = () => {
 
     // Add save annotations button
     setHeaderItems(header => {
-      // Add upload file button
+      // Add upload file button 
       header.push({
         type: 'actionButton',
         img: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -301,6 +408,31 @@ const App = () => {
     });
   }
 
+  const switchActiveInstance = async () => {
+    let annotManager;
+    const { parentInstance: { docViewer } } = state;
+
+    if (activeInstance === 1) {
+      setActiveInstance(2);
+      overlayWrapper.current.style.left = 'unset';
+      const { instance2 } = state;
+
+      annotManager = instance2.docViewer.getAnnotationManager();
+    } else {
+      setActiveInstance(1);
+      overlayWrapper.current.style.left = '50%';
+      const { instance1 } = state;  
+
+      annotManager = instance1.docViewer.getAnnotationManager();
+    }
+
+    let annotations = await annotManager.exportAnnotations();
+    docViewer.getAnnotationManager().deleteAnnotations(
+      docViewer.getAnnotationManager().getAnnotationsList()
+    );
+    docViewer.getAnnotationManager().importAnnotations(annotations);
+  };
+
   // TODO:
   // When opening notes panel either copy elements into document content container
   // Have notes panel open on right side
@@ -308,17 +440,22 @@ const App = () => {
   return (
     <div className="App">
       <input type="file" hidden ref={inputFile} onChange={onFileChange} value=""/>
-      {/* <div className="webviewer" ref={viewer}/> */}
-
       <div className="webviewer-parent-wrapper">
         <div className="webviewer" ref={parentViewer}/>
       </div>
 
-      <div className="webviewer-compare-wrapper">
-        <div className="webviewer" ref={viewer1}/>
-      </div>
-      <div className="webviewer-compare-wrapper">
-        <div className="webviewer" ref={viewer2}/>
+      <div className="compare-app" ref={compareContainer}>
+        <div
+          className={`webviewer-compare-wrapper ${activeInstance === 1 ? 'active-compare-wrapper ' : ''}`}
+        >
+          <div className="webviewer" ref={viewer1}/>
+        </div>
+        <div
+          className={`webviewer-compare-wrapper ${activeInstance === 2 ? 'active-compare-wrapper ' : ''}`}
+        >
+          <div className="webviewer" ref={viewer2}/>
+        </div>
+        <div className="webviewer-overlay" onClick={() => switchActiveInstance()} ref={overlayWrapper}></div>
       </div>
     </div>
   );
