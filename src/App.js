@@ -10,7 +10,7 @@ import {
   demoPeaks,
   demoXFDFString,
 } from './constants/demo-vars';
-import { initCompareViewer } from './functions/initCompareViewer'
+import { initCompareViewer } from './functions/initCompareViewer';
 
 // Maybe convert to global state later
 let globalInstance1;
@@ -337,12 +337,19 @@ const App = () => {
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
+
+      // Need to load a dummy video here to be able to load annotations
       videoInstance3.loadVideo('/input.mp4');
       createSyncButton(instance);
       setState(prevState => ({ ...prevState, parentInstance: instance }));
 
       setTimeout(() => {
+        const parentApp = instance.iframeWindow.document.querySelector('.App');
+        console.log(parentApp);
+        parentApp.style.height = 'unset';
+
         const parentContainer = instance.iframeWindow.document.querySelector('.document-content-container');
+        parentContainer.style.height = '0px';
 
         parentContainer.ontransitionstart = () => {
           compareContainer.current.style.width = `${parentContainer.clientWidth}px`;
@@ -445,14 +452,10 @@ const App = () => {
       </div>
 
       <div className="compare-app" ref={compareContainer}>
-        <div
-          className={`webviewer-compare-wrapper ${activeInstance === 1 ? 'active-compare-wrapper ' : ''}`}
-        >
+        <div className="webviewer-compare-wrapper" >
           <div className="webviewer" ref={viewer1}/>
         </div>
-        <div
-          className={`webviewer-compare-wrapper ${activeInstance === 2 ? 'active-compare-wrapper ' : ''}`}
-        >
+        <div className="webviewer-compare-wrapper" >
           <div className="webviewer" ref={viewer2}/>
         </div>
         <div className="webviewer-overlay" onClick={() => switchActiveInstance()} ref={overlayWrapper}></div>
