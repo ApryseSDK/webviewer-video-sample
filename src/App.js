@@ -22,6 +22,7 @@ const App = () => {
   const viewer2 = useRef(null);
   const inputFile = useRef(null);
   const compareContainer = useRef(null);
+  const parentWrapper = useRef(null);
   const overlayWrapper = useRef(null);
   const [state, setState] = useState({
     parentInstance: null,
@@ -56,6 +57,8 @@ const App = () => {
     };
 
     const onAnnotationChanged = instance => {
+      const parentAnnotManager = parentInstance.docViewer.getAnnotationManager();
+
       return async () => {
         if (activeInstance === instance) {
           const annotManager = instance === 1 
@@ -63,8 +66,8 @@ const App = () => {
             : instance2.docViewer.getAnnotationManager();
 
           let newAnnotations = await annotManager.exportAnnotations();
-          parentInstance.docViewer.getAnnotationManager().deleteAnnotations(parentInstance.docViewer.getAnnotationManager().getAnnotationsList());
-          parentInstance.docViewer.getAnnotationManager().importAnnotations(newAnnotations);
+          parentAnnotManager.deleteAnnotations(parentAnnotManager.getAnnotationsList());
+          parentAnnotManager.importAnnotations(newAnnotations);
         }
       };
     };
@@ -89,14 +92,11 @@ const App = () => {
       const instance1AnnotManager = instance1.docViewer.getAnnotationManager();
       const instance2AnnotManager = instance2.docViewer.getAnnotationManager();
 
-      instance1AnnotManager.addEventListener('annotationChanged', onAnnotationChanged(1));
-      instance2AnnotManager.addEventListener('annotationChanged', onAnnotationChanged(2));
-    };
+      const onAnnotationChangedInstance1 = onAnnotationChanged(1);
+      const onAnnotationChangedInstance2 = onAnnotationChanged(2);
 
-    const { instance1, instance2, parentInstance } = state;
-
-    if (parentInstance && instance1 && instance2) {
-      setUpParentViewer(parentInstance);
+      instance1AnnotManager.addEventListener('annotationChanged', onAnnotationChangedInstance1);
+      instance2AnnotManager.addEventListener('annotationChanged', onAnnotationChangedInstance2);
 
       return () => {
         parentInstance.iframeWindow.removeEventListener('themeChanged', setDisplayTheme);
@@ -104,12 +104,20 @@ const App = () => {
         parentInstance.docViewer.removeEventListener('toolModeUpdated', onToolModeUpdate);
         parentInstance.docViewer.removeEventListener('zoomUpdated', onZoomUpdated);
 
+
         const instance1AnnotManager = instance1.docViewer.getAnnotationManager();
         const instance2AnnotManager = instance2.docViewer.getAnnotationManager();
   
-        instance1AnnotManager.removeEventListener('annotationChanged', onAnnotationChanged(1));
-        instance2AnnotManager.removeEventListener('annotationChanged', onAnnotationChanged(2));
+        instance1AnnotManager.removeEventListener('annotationChanged', onAnnotationChangedInstance1);
+        instance2AnnotManager.removeEventListener('annotationChanged', onAnnotationChangedInstance2);
       };
+    };
+
+    const { instance1, instance2, parentInstance } = state;
+
+    if (parentInstance && instance1 && instance2) {
+      setUpParentViewer(parentInstance);
+
     }
   }, [state, activeInstance]);
 
@@ -196,6 +204,81 @@ const App = () => {
         });
       });
     };
+
+    // Parent 
+    WebViewer(
+      {
+        path: '/webviewer/lib',
+        autoFocusReplyInputOnAnnotationSelect: false,
+        selectAnnotationOnCreation: true,
+        css: '/Compare.css',
+      },
+      parentViewer.current,
+    ).then(async instance => {
+      const license = `---- Insert commercial license key here after purchase ----`;
+
+      await initializeAudioViewer(
+        instance,
+        { license },
+      );
+
+      const videoInstance3 = await initializeVideoViewer(
+        instance,
+        {
+          license,
+          showAnnotationPreview: false,
+          hideOutOfRangeAnnotations: false,
+          AudioComponent: Waveform,
+        }
+      );
+
+      instance.setTheme('dark');
+
+      // Load a video at a specific url. Can be a local or public link
+      // If local it needs to be relative to lib/ui/index.html.
+      // Or at the root. (eg '/video.mp4')
+
+      // Need to load a dummy video here to be able to load annotations (find empty video)
+      videoInstance3.loadVideo('/input.mp4');
+      createSyncButton(instance);
+      setState(prevState => ({ ...prevState, parentInstance: instance }));
+
+      const { docViewer } = instance;
+      const onDocumentLoaded = () => {
+        const toolsContainer = instance.iframeWindow.document.querySelector('.tools-container')        
+        const toolsContainerCallback = mutationList => {
+          mutationList.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+              if (mutation.target.classList.contains('is-styling-open')) {
+                parentWrapper.current.style.zIndex = 2;
+              } else {
+                parentWrapper.current.style.zIndex = 0;
+              }
+            }
+          });
+        };
+        
+        const observer = new MutationObserver(toolsContainerCallback);
+        observer.observe(toolsContainer, { attributes: true });
+        
+
+        const parentContainer = instance.iframeWindow.document.querySelector('.document-content-container');
+
+        parentContainer.ontransitionstart = () => {
+          compareContainer.current.style.width = `${parentContainer.clientWidth}px`;
+        };
+
+        parentContainer.ontransitionend = () => {
+          compareContainer.current.style.width = `${parentContainer.clientWidth}px`;
+        };
+
+        instance.iframeWindow.onresize = () => {
+          compareContainer.current.style.width = `${parentContainer.clientWidth}px`;
+        };
+      };
+      
+      docViewer.addEventListener('documentLoaded', onDocumentLoaded);
+    });
 
     // First Compare
     WebViewer(
@@ -305,65 +388,6 @@ const App = () => {
         docViewer.addEventListener('documentLoaded', onDocumentLoaded);
       }
     });
-
-    // Parent 
-    WebViewer(
-      {
-        path: '/webviewer/lib',
-        autoFocusReplyInputOnAnnotationSelect: false,
-        selectAnnotationOnCreation: true,
-      },
-      parentViewer.current,
-    ).then(async instance => {
-      const license = `---- Insert commercial license key here after purchase ----`;
-
-      await initializeAudioViewer(
-        instance,
-        { license },
-      );
-
-      const videoInstance3 = await initializeVideoViewer(
-        instance,
-        {
-          license,
-          showAnnotationPreview: false,
-          hideOutOfRangeAnnotations: false,
-          AudioComponent: Waveform,
-        }
-      );
-
-      instance.setTheme('dark');
-
-      // Load a video at a specific url. Can be a local or public link
-      // If local it needs to be relative to lib/ui/index.html.
-      // Or at the root. (eg '/video.mp4')
-
-      // Need to load a dummy video here to be able to load annotations
-      videoInstance3.loadVideo('/input.mp4');
-      createSyncButton(instance);
-      setState(prevState => ({ ...prevState, parentInstance: instance }));
-
-      setTimeout(() => {
-        const parentApp = instance.iframeWindow.document.querySelector('.App');
-        console.log(parentApp);
-        parentApp.style.height = 'unset';
-
-        const parentContainer = instance.iframeWindow.document.querySelector('.document-content-container');
-        parentContainer.style.height = '0px';
-
-        parentContainer.ontransitionstart = () => {
-          compareContainer.current.style.width = `${parentContainer.clientWidth}px`;
-        };
-
-        parentContainer.ontransitionend = () => {
-          compareContainer.current.style.width = `${parentContainer.clientWidth}px`;
-        };
-
-        instance.iframeWindow.onresize = () => {
-          compareContainer.current.style.width = `${parentContainer.clientWidth}px`;
-        };
-      }, 1000);
-    });
   }, []);
 
   const onFileChange = async event => {
@@ -417,7 +441,11 @@ const App = () => {
 
   const switchActiveInstance = async () => {
     let annotManager;
-    const { parentInstance: { docViewer } } = state;
+    const {
+      parentInstance: { docViewer },
+      instance1: { docViewer: instance1DocViewer },
+      instance2: { docViewer: instance2DocViewer },
+    } = state;
 
     if (activeInstance === 1) {
       setActiveInstance(2);
@@ -425,12 +453,14 @@ const App = () => {
       const { instance2 } = state;
 
       annotManager = instance2.docViewer.getAnnotationManager();
+      instance1DocViewer.getAnnotationManager().deselectAllAnnotations();
     } else {
       setActiveInstance(1);
       overlayWrapper.current.style.left = '50%';
       const { instance1 } = state;  
 
       annotManager = instance1.docViewer.getAnnotationManager();
+      instance2DocViewer.getAnnotationManager().deselectAllAnnotations();
     }
 
     let annotations = await annotManager.exportAnnotations();
@@ -447,15 +477,19 @@ const App = () => {
   return (
     <div className="App">
       <input type="file" hidden ref={inputFile} onChange={onFileChange} value=""/>
-      <div className="webviewer-parent-wrapper">
+      <div className="webviewer-parent-wrapper" ref={parentWrapper}>
         <div className="webviewer" ref={parentViewer}/>
       </div>
 
       <div className="compare-app" ref={compareContainer}>
-        <div className="webviewer-compare-wrapper" >
+        <div
+          className={`webviewer-compare-wrapper ${activeInstance === 1 ? 'active-compare-wrapper ' : ''}`}
+        >
           <div className="webviewer" ref={viewer1}/>
         </div>
-        <div className="webviewer-compare-wrapper" >
+        <div
+          className={`webviewer-compare-wrapper ${activeInstance === 2 ? 'active-compare-wrapper ' : ''}`}
+        >
           <div className="webviewer" ref={viewer2}/>
         </div>
         <div className="webviewer-overlay" onClick={() => switchActiveInstance()} ref={overlayWrapper}></div>

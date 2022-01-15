@@ -1,5 +1,5 @@
 const initCompareViewer = instance => {
-  instance.iframeWindow.frameElement.style.position = 'unset';
+  instance.iframeWindow.frameElement.style.position = 'relative';
 
   instance.disableElements([
     'toggleNotesButton',
@@ -8,6 +8,7 @@ const initCompareViewer = instance => {
     'MergeAnnotationsTool',
     'toolsHeader',
     'notesPanel',
+    'toolsOverlay',
   ]);
   
   instance.UI.disableToolDefaultStyleUpdateFromAnnotationPopup();
