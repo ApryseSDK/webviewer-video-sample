@@ -67,8 +67,10 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "start-compare": "RUN_COMPARE=true node scripts/start.js",
     "clean": "rm -rf node_modules/ package-lock.json",
     "start-demo": "DEMO=true node scripts/start.js",
+    "start-demo-compare": "DEMO=true RUN_COMPARE=true node scripts/start.js",
     "deploy-demo": "npm run build-demo && firebase deploy --only hosting:webviewer-video && node -e \"console.log('%sMake sure to test demo page in INCOGNITO: https://www.pdftron.com/samples/web/samples/advanced/video/%s', '\\x1b[42;30m', '\\x1b[0m' )\"",
     "deploy-demo-beta-v4": "npm run build-demo && firebase deploy --only hosting:webviewer-video-4-0",
     "start-server": "node server/server.js",
