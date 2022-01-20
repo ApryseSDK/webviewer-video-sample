@@ -63,10 +63,18 @@ const onCustomMenuOpened = parentWrapper => {
   };
 };
 
-const setUpParentViewer = ({ parentInstance, instance1, instance2 }, parentWrapper, activeInstance) => {
+const onVideoSettingsUpdated = (instance1, instance2) => {
+  return e => {
+    instance1.UI.setAudioElementVisibility(e.detail.videoSettings.showAudioViewer);
+    instance2.UI.setAudioElementVisibility(e.detail.videoSettings.showAudioViewer);
+  };
+};
+
+const setUpParentViewer = ({ parentInstance, instance1, instance2, videoInstance1, videoInstance2 }, parentWrapper, activeInstance) => {
   parentInstance.disableElements([
     'downloadButton',
     'selectToolButton',
+    'zoomOverlay',
   ]);
   setDisplayTheme({ detail: parentInstance.UI.selectors.getActiveTheme() });
 
@@ -75,6 +83,7 @@ const setUpParentViewer = ({ parentInstance, instance1, instance2 }, parentWrapp
   const parentOnToolUpdate = onToolUpdate(instance1, instance2);
   const parentOnCustomMenuOpened = onCustomMenuOpened(parentWrapper);
   const parentOnToolModeUpdate = onToolModeUpdate(instance1, instance2);
+  const parentOnVideoSettingsUpdated = onVideoSettingsUpdated(videoInstance1, videoInstance2);
 
   const instance1AnnotManager = instance1.docViewer.getAnnotationManager();
   const instance2AnnotManager = instance2.docViewer.getAnnotationManager();
@@ -95,6 +104,7 @@ const setUpParentViewer = ({ parentInstance, instance1, instance2 }, parentWrapp
 
   parentInstance.iframeWindow.addEventListener('themeChanged', parentSetDisplayTheme);
   parentInstance.iframeWindow.addEventListener('customMenuOpened', parentOnCustomMenuOpened);
+  parentInstance.iframeWindow.addEventListener('videoSettingsUpdated', parentOnVideoSettingsUpdated);
   parentInstance.docViewer.addEventListener('toolUpdated', parentOnToolUpdate);
   parentInstance.docViewer.addEventListener('toolModeUpdated', parentOnToolModeUpdate);
   parentInstance.docViewer.addEventListener('zoomUpdated', parentOnZoomUpdated);
@@ -106,6 +116,7 @@ const setUpParentViewer = ({ parentInstance, instance1, instance2 }, parentWrapp
   return () => {
     parentInstance.iframeWindow.removeEventListener('themeChanged', parentSetDisplayTheme);
     parentInstance.iframeWindow.removeEventListener('customMenuOpened', parentOnCustomMenuOpened);
+    parentInstance.iframeWindow.removeEventListener('videoSettingsUpdated', parentOnVideoSettingsUpdated);
     parentInstance.docViewer.removeEventListener('toolUpdated', parentOnToolUpdate);
     parentInstance.docViewer.removeEventListener('toolModeUpdated', parentOnToolModeUpdate);
     parentInstance.docViewer.removeEventListener('zoomUpdated', parentOnZoomUpdated);

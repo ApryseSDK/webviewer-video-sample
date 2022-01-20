@@ -75,6 +75,8 @@ const CompareApp = () => {
           showAnnotationPreview: false,
           hideOutOfRangeAnnotations: false,
           AudioComponent: Waveform,
+          showFrames: false,
+          showTooltipPreview: false,
         }
       );
 

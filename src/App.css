@@ -25,10 +25,6 @@
   margin-top: 76px;
 }
 
-.webviewer-parent-wrapper iframe {
-  /* pointer-events: none; */
-}
-
 .webviewer-wrapper {
   width: 100%;
   height: 100%;

@@ -27,3 +27,7 @@ body {
 .right-panel {
   margin-top: 40px;
 }
+
+.zoom-overlay .OverlayContainer {
+  display: block;
+};
