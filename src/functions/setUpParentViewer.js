@@ -46,13 +46,6 @@ const onAnnotationChanged = ({
   };
 };
 
-const onZoomUpdated = (instance1, instance2) => {
-  return newZoomLevel => {
-    instance1.UI.setZoomLevel(newZoomLevel);
-    instance2.UI.setZoomLevel(newZoomLevel);
-  };
-};
-
 const onCustomMenuOpened = parentWrapper => {
   return e => {
     if (e.detail.isMenuOpen) {
@@ -74,11 +67,11 @@ const setUpParentViewer = ({ parentInstance, instance1, instance2, videoInstance
   parentInstance.disableElements([
     'downloadButton',
     'selectToolButton',
-    'zoomOverlay',
+    'zoomOverlayButton',
   ]);
+
   setDisplayTheme({ detail: parentInstance.UI.selectors.getActiveTheme() });
 
-  const parentOnZoomUpdated = onZoomUpdated(instance1, instance2);
   const parentSetDisplayTheme = setDisplayTheme(instance1, instance2);
   const parentOnToolUpdate = onToolUpdate(instance1, instance2);
   const parentOnCustomMenuOpened = onCustomMenuOpened(parentWrapper);
@@ -107,8 +100,6 @@ const setUpParentViewer = ({ parentInstance, instance1, instance2, videoInstance
   parentInstance.iframeWindow.addEventListener('videoSettingsUpdated', parentOnVideoSettingsUpdated);
   parentInstance.docViewer.addEventListener('toolUpdated', parentOnToolUpdate);
   parentInstance.docViewer.addEventListener('toolModeUpdated', parentOnToolModeUpdate);
-  parentInstance.docViewer.addEventListener('zoomUpdated', parentOnZoomUpdated);
-
 
   instance1AnnotManager.addEventListener('annotationChanged', onAnnotationChangedInstance1);
   instance2AnnotManager.addEventListener('annotationChanged', onAnnotationChangedInstance2);
@@ -119,100 +110,23 @@ const setUpParentViewer = ({ parentInstance, instance1, instance2, videoInstance
     parentInstance.iframeWindow.removeEventListener('videoSettingsUpdated', parentOnVideoSettingsUpdated);
     parentInstance.docViewer.removeEventListener('toolUpdated', parentOnToolUpdate);
     parentInstance.docViewer.removeEventListener('toolModeUpdated', parentOnToolModeUpdate);
-    parentInstance.docViewer.removeEventListener('zoomUpdated', parentOnZoomUpdated);
-
 
     instance1AnnotManager.removeEventListener('annotationChanged', onAnnotationChangedInstance1);
     instance2AnnotManager.removeEventListener('annotationChanged', onAnnotationChangedInstance2);
   };
 };
 
-const createSyncButton = (instance, globalInstance1, globalInstance2) => {
-  const { setHeaderItems, updateElement } = instance;
-  let isSynced = false;
-  let syncingVideo;
-
-  // Add save annotations button
-  setHeaderItems(header => {
-    // Add upload file button
-    header.push({
-      type: 'actionButton',
-      img: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M9 6H4C3.44772 6 3 6.44772 3 7V17C3 17.5523 3.44772 18 4 18H9V16H5V8H9V6ZM15 16H19V8H15V6H20C20.5523 6 21 6.44772 21 7V17C21 17.5523 20.5523 18 20 18H15V16Z" fill="currentColor"/>
-      <path d="M12.5 7L8 10.75V3.25L12.5 7Z" fill="currentColor"/>
-      <path d="M11.25 17L15.75 20.75V13.25L11.25 17Z" fill="currentColor"/>
-      </svg>`,
-      title: 'Sync Playback',
-      dataElement: 'syncPlaybackButton',
-      onClick: () => {
-        isSynced = !isSynced;
-        updateElement('syncPlaybackButton', {
-          className: `${ isSynced ? 'active' : ''}`
-        });
-
-        const video1 = globalInstance1.getVideo();
-        const video2 = globalInstance2.getVideo(); 
-
-        // TODO: Move the mute elsewhere, should probably set up compare after initialization
-        video1.setMuted(true);
-        video2.setMuted(true);
-
-        const onPlay = video => {
-          return () => {
-            if (isSynced) {
-              video.getElement().play();
-            }
-          };
-        };
-
-        const onPause = (pausedVideo, videoToPause) => {
-          return () => {
-            if (isSynced) {
-              videoToPause.getElement().pause();
-              videoToPause.goToTime(pausedVideo.getElement().currentTime);
-            }
-          };
-        };
-
-        const onSeeked = (seekedVideo, videoToSeek) => {
-          return () => {
-            if (!isSynced) {
-              return;
-            }
-
-            if (syncingVideo !== videoToSeek) {
-              syncingVideo = seekedVideo;
-              
-              seekedVideo.getElement().pause();
-              videoToSeek.getElement().pause();
-
-              videoToSeek.goToTime(seekedVideo.getElement().currentTime);
-            } else {
-              syncingVideo = null;
-            }
-          };
-        };
-
-        if (isSynced) {
-          video1.getElement().pause();
-          video2.getElement().pause();
-
-          video2.goToTime(video1.getElement().currentTime);
-          video1.getElement().onplay = onPlay(video2);
-          video2.getElement().onplay = onPlay(video1);
-          video1.getElement().onpause = onPause(video1, video2);
-          video2.getElement().onpause = onPause(video2, video1);
-          video1.getElement().onseeked = onSeeked(video1, video2);
-          video2.getElement().onseeked = onSeeked(video2, video1);
-        }
-      }
-    });
-  });
-};
-
 const onParentDocumentLoaded = (instance, parentWrapper, compareContainer) => {
   return () => {
     instance.UI.setZoomLevel(1.5);
+    instance.UI.disableElements([
+      'MergeAnnotationsTool',
+    ]);
+
+    instance.UI.setHeaderItems(function(header) {
+      header.getHeader('default').delete(1);
+    });
+
     const toolsContainer = instance.iframeWindow.document.querySelector('.tools-container');        
     const toolsContainerCallback = mutationList => {
       mutationList.forEach(function(mutation                                                                                                                                                                                                                                   ) {
@@ -247,6 +161,5 @@ const onParentDocumentLoaded = (instance, parentWrapper, compareContainer) => {
 
 export {
   setUpParentViewer,
-  createSyncButton,
   onParentDocumentLoaded,
 };

@@ -10,16 +10,15 @@ import {
   demoPeaks,
   demoXFDFString,
 } from '../constants/demo-vars';
-import { initCompareViewer, switchActiveInstance } from '../functions/initCompareViewer';
+import {
+  createSyncButton,
+  initCompareViewer,
+  switchActiveInstance
+} from '../functions/initCompareViewer';
 import {
   setUpParentViewer,
-  createSyncButton,
   onParentDocumentLoaded,
 } from '../functions/setUpParentViewer';
-
-// Maybe convert to global state later
-let globalInstance1;
-let globalInstance2;
 
 const CompareApp = () => {
   const parentViewer = useRef(null);
@@ -42,11 +41,28 @@ const CompareApp = () => {
   const [ activeInstance, setActiveInstance ] = useState(1);
 
   useEffect(() => {
-    const { instance1, instance2, parentInstance } = state;
+    const {
+      instance1,
+      instance2,
+      parentInstance,
+      videoInstance1,
+      videoInstance2
+    } = state;
 
     if (parentInstance && instance1 && instance2) {
       setUpParentViewer(state, parentWrapper, activeInstance);
-
+      createSyncButton({ 
+        mainInstance: instance1,
+        mainVideoInstance: videoInstance1,
+        secondaryInstance: instance2,
+        secondaryVideoInstance: videoInstance2,
+      });
+      createSyncButton({
+        mainInstance: instance2,
+        mainVideoInstance: videoInstance2,
+        secondaryInstance: instance1,
+        secondaryVideoInstance: videoInstance1,
+      });
     }
   }, [state, activeInstance, parentWrapper]);
 
@@ -83,8 +99,7 @@ const CompareApp = () => {
       instance.setTheme('dark');
 
       // We load a dummy video here to be able to load annotations into parent webviewer instance
-      videoInstance3.loadVideo('/blank-0.2-sec.m4v');
-      createSyncButton(instance, globalInstance1, globalInstance2);
+      videoInstance3.loadVideo('https://pdftron.s3.amazonaws.com/downloads/pl/video/blank-0.2-sec.m4v');
       setState(prevState => ({ ...prevState, parentInstance: instance }));
       instance.docViewer.addEventListener('documentLoaded', onParentDocumentLoaded(instance, parentWrapper, compareContainer));
     });
@@ -125,7 +140,6 @@ const CompareApp = () => {
       // Or at the root. (eg '/video.mp4')
       videoInstance1.loadVideo(videoUrl);
       initializeHeader(instance);
-      globalInstance1 = videoInstance1;
 
       const { docViewer } = instance;
       const annotManager = docViewer.getAnnotationManager();
@@ -179,7 +193,6 @@ const CompareApp = () => {
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
       videoInstance2.loadVideo(videoUrl);
-      globalInstance2 = videoInstance2;
       initializeHeader(instance);
 
       const { docViewer } = instance;
