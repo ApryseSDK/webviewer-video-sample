@@ -32,6 +32,12 @@ npm install
 npm start
 ```
 
+## Running Compare Mode
+
+```
+npm run start-compare
+```
+
 ## Build
 
 Run `npm run build` to build the project. The build artifacts will be stored in the `build/` directory. See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.

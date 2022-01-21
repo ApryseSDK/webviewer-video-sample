@@ -97,6 +97,13 @@ const createSyncButton = ({
             video2.getElement().onpause = onPause(video2, video1);
             video1.getElement().onseeked = onSeeked(video1, video2);
             video2.getElement().onseeked = onSeeked(video2, video1);
+          } else {
+            video1.getElement().onplay = null;
+            video2.getElement().onplay = null;
+            video1.getElement().onpause = null;
+            video2.getElement().onpause = null;
+            video1.getElement().onseeked = null;
+            video2.getElement().onseeked = null;
           }
         }
       });
