@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import CompareApp from './compare/Compare';
 
-if (true || process.env.RUN_COMPARE) {
+if (process.env.RUN_COMPARE) {
   ReactDOM.render(<CompareApp />, document.getElementById('root'));
 } else {
   ReactDOM.render(<App />, document.getElementById('root'));

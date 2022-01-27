@@ -125,6 +125,7 @@ const CompareApp = () => {
         instance,
         {
           license,
+          isCompare: true,
           AudioComponent: Waveform,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
         }
@@ -179,6 +180,7 @@ const CompareApp = () => {
         instance,
         {
           license,
+          isCompare: true,
           AudioComponent: Waveform,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
         }
