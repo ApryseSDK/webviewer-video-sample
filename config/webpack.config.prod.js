@@ -427,6 +427,9 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.DEMO': JSON.stringify(process.env.DEMO || false)
     }),
+    new webpack.DefinePlugin({
+      'process.env.RUN_COMPARE': JSON.stringify(process.env.RUN_COMPARE || false)
+    }),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
