@@ -60,6 +60,8 @@ const onVideoSettingsUpdated = (instance1, instance2) => {
   return e => {
     instance1.UI.setAudioElementVisibility(e.detail.videoSettings.showAudioViewer);
     instance2.UI.setAudioElementVisibility(e.detail.videoSettings.showAudioViewer);
+    instance1.UI.setFramesVisibility(e.detail.videoSettings.showFrames);
+    instance2.UI.setFramesVisibility(e.detail.videoSettings.showFrames);
   };
 };
 

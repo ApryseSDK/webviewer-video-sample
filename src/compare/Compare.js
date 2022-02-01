@@ -88,6 +88,7 @@ const CompareApp = () => {
         instance,
         {
           license,
+          isCompare: true,
           showAnnotationPreview: false,
           hideOutOfRangeAnnotations: false,
           AudioComponent: Waveform,
