@@ -25,7 +25,7 @@ const App = () => {
       viewer.current,
     ).then(async instance => {
       const license = `---- Insert commercial license key here after purchase ----`;
-      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+      const videoUrl = 'https://dash.akamaized.net/dash264/TestCasesHD/2b/qualcomm/1/MultiResMPEG2.mpd';//'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
 
       const audioInstance = await initializeAudioViewer(
         instance,
@@ -35,6 +35,7 @@ const App = () => {
       const videoInstance = await initializeVideoViewer(
         instance,
         {
+          runShakaIntegration: true,
           license,
           AudioComponent: Waveform,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
@@ -48,7 +49,7 @@ const App = () => {
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      videoInstance.loadVideo(videoUrl);
+      videoInstance.loadVideo('/asdf.mpeg');
       initializeHeader(instance);
 
       const { docViewer } = instance;
