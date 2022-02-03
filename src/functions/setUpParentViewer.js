@@ -70,6 +70,7 @@ const setUpParentViewer = ({ parentInstance, instance1, instance2, videoInstance
     'downloadButton',
     'selectToolButton',
     'zoomOverlayButton',
+    'toolbarGroup-View',
   ]);
 
   setDisplayTheme({ detail: parentInstance.UI.selectors.getActiveTheme() });
