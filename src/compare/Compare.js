@@ -227,14 +227,14 @@ const CompareApp = () => {
         instance1: instance,
         videoInstance1: videoInstance,
         audioInstance1: audioInstance
-      };
+      } = state;
     } else {
       // eslint-disable-next-line no-empty-pattern
       let {} = {
         instance2: instance,
         videoInstance2: videoInstance,
         audioInstance2: audioInstance
-      };
+      } = state;
     }
 
     // Seamlessly switch between PDFs and videos.
