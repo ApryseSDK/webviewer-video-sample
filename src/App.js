@@ -49,11 +49,36 @@ const App = () => {
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      videoInstance.loadVideo('/asdf.mpeg');
+      videoInstance.loadVideo(videoUrl);
       initializeHeader(instance);
 
       const { docViewer } = instance;
       const annotManager = docViewer.getAnnotationManager();
+
+      annotManager.addEventListener('annotationsDrawn', () => {
+        console.log('in here');
+        docViewer.setWatermark({
+          // Draw diagonal watermark in middle of the document
+          diagonal: {
+            fontSize: 25, // or even smaller size
+            fontFamily: 'sans-serif',
+            color: 'red',
+            opacity: 100, // from 0 to 100
+            text: 'Watermark'
+          },
+    
+          // Draw header watermark
+          header: {
+            fontSize: 10,
+            fontFamily: 'sans-serif',
+            color: 'red',
+            opacity: 70,
+            left: 'left watermark',
+            center: 'center watermark',
+            right: ''
+          },
+        });
+      });
 
       if (process.env.DEMO) {
         // Load saved annotations
