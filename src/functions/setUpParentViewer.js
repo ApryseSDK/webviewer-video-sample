@@ -124,6 +124,7 @@ const onParentDocumentLoaded = (instance, parentWrapper, compareContainer) => {
     instance.UI.setZoomLevel(1.5);
     instance.UI.disableElements([
       'MergeAnnotationsTool',
+      'rubberStampToolGroupButton',
     ]);
 
     instance.UI.setHeaderItems(function(header) {
