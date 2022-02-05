@@ -124,6 +124,7 @@ const onParentDocumentLoaded = (instance, parentWrapper, compareContainer) => {
     instance.UI.setZoomLevel(1.5);
     instance.UI.disableElements([
       'MergeAnnotationsTool',
+      // We disable this tool as there is a bug in webviewer where an event isn't fired when the stamp is updated
       'rubberStampToolGroupButton',
     ]);
 
