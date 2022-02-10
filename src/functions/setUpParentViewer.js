@@ -120,6 +120,8 @@ const setUpParentViewer = ({ parentInstance, instance1, instance2, videoInstance
 };
 
 const onParentDocumentLoaded = (instance, parentWrapper, compareContainer) => {
+  let isStylingOpen = false;
+
   return () => {
     instance.UI.setZoomLevel(1.5);
     instance.UI.disableElements([
@@ -136,13 +138,24 @@ const onParentDocumentLoaded = (instance, parentWrapper, compareContainer) => {
     const toolsContainerCallback = mutationList => {
       mutationList.forEach(function(mutation                                                                                                                                                                                                                                   ) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          isStylingOpen = false;
+
           if (mutation.target.classList.contains('is-styling-open')) {
             parentWrapper.current.style.zIndex = 2;
-          } else {
+            isStylingOpen = true;
+          } else if (window.innerWidth > 640) {
             parentWrapper.current.style.zIndex = 0;
           }
         }
       });
+    };
+
+    window.onresize = () => {
+      if (window.innerWidth <= 640 && !isStylingOpen) {
+        parentWrapper.current.style.zIndex = 2;
+      } else {
+        parentWrapper.current.style.zIndex = 0;
+      }
     };
     
     const observer = new MutationObserver(toolsContainerCallback);
