@@ -74,10 +74,12 @@ const App = () => {
     const url = URL.createObjectURL(file);
     const { instance, videoInstance, audioInstance } = state;
 
+    console.log(file, url);
+
     // Seamlessly switch between PDFs and videos.
     // Can also detect by specific video file types (ie. mp4, ogg, etc.)
     if (file.type.includes('video')) {
-      videoInstance.loadVideo(url, { fileName: file.name, });
+      videoInstance.loadVideo(url, { type: file.type, });
       // TODO: Notespanel needs to be delayed when opening. Not sure why.
       setTimeout(() => {
         instance.openElements('notesPanel');
