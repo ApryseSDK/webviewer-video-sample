@@ -102,7 +102,11 @@ const CompareApp = () => {
       // We load a dummy video here to be able to load annotations into parent webviewer instance
       videoInstance3.loadVideo('https://pdftron.s3.amazonaws.com/downloads/pl/video/blank-0.2-sec.m4v');
       setState(prevState => ({ ...prevState, parentInstance: instance }));
-      instance.UI.addEventListener('documentLoaded', onParentDocumentLoaded(instance, parentWrapper, compareContainer));
+
+      instance.docViewer.addEventListener(
+        'finishedRendering',
+        onParentDocumentLoaded(instance, parentWrapper, compareContainer),
+      );
     });
 
     // First Compare
