@@ -78,7 +78,9 @@ const App = () => {
 
     // Seamlessly switch between PDFs and videos.
     // Can also detect by specific video file types (ie. mp4, ogg, etc.)
-    if (file.type.includes('video')) {
+    if (file.type.includes('video') ||
+      (file.name.includes('.mpd') && file.type === '')
+    ) {
       videoInstance.loadVideo(url, { type: file.type, });
       // TODO: Notespanel needs to be delayed when opening. Not sure why.
       setTimeout(() => {
