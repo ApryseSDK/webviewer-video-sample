@@ -25,7 +25,7 @@ const App = () => {
       viewer.current,
     ).then(async instance => {
       const license = `---- Insert commercial license key here after purchase ----`;
-      const videoUrl = 'https://dash.akamaized.net/dash264/TestCasesHD/2b/qualcomm/1/MultiResMPEG2.mpd';//'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
 
       const audioInstance = await initializeAudioViewer(
         instance,
@@ -35,7 +35,6 @@ const App = () => {
       const videoInstance = await initializeVideoViewer(
         instance,
         {
-          runShakaIntegration: true,
           license,
           AudioComponent: Waveform,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
@@ -73,8 +72,6 @@ const App = () => {
     const file = event.target.files[0];
     const url = URL.createObjectURL(file);
     const { instance, videoInstance, audioInstance } = state;
-
-    console.log(file, url);
 
     // Seamlessly switch between PDFs and videos.
     // Can also detect by specific video file types (ie. mp4, ogg, etc.)
