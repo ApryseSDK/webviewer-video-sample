@@ -104,7 +104,7 @@ const CompareApp = () => {
       setState(prevState => ({ ...prevState, parentInstance: instance }));
 
       instance.docViewer.addEventListener(
-        'finishedRendering',
+        'documentLoaded',
         onParentDocumentLoaded(instance, parentWrapper, compareContainer),
       );
     });

@@ -134,7 +134,13 @@ const onParentDocumentLoaded = (instance, parentWrapper, compareContainer) => {
       header.getHeader('default').delete(1);
     });
 
-    const toolsContainer = instance.iframeWindow.document.querySelector('.tools-container');        
+    const setUpToolsOverlayObserver = () => {
+      const observer = new MutationObserver(toolsContainerCallback);
+      observer.observe(toolsContainer, { attributes: true });
+      return observer;
+    };
+
+    let toolsContainer = instance.iframeWindow.document.querySelector('.tools-container');        
     const toolsContainerCallback = mutationList => {
       mutationList.forEach(function(mutation                                                                                                                                                                                                                                   ) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
@@ -157,9 +163,23 @@ const onParentDocumentLoaded = (instance, parentWrapper, compareContainer) => {
         parentWrapper.current.style.zIndex = 0;
       }
     };
-    
-    const observer = new MutationObserver(toolsContainerCallback);
-    observer.observe(toolsContainer, { attributes: true });
+
+    const onToolsContainerDisplay = (_, observer) => {
+      toolsContainer = instance.iframeWindow.document.querySelector('.tools-container');
+
+      if (toolsContainer) {
+        setUpToolsOverlayObserver();
+        observer.disconnect();
+      }
+      toolsContainer && setUpToolsOverlayObserver();
+    };
+
+    if (!toolsContainer) {
+      const documentObserver = new MutationObserver(onToolsContainerDisplay);
+      documentObserver.observe(instance.iframeWindow.document, { childList: true, subtree: true });
+    } else {
+      setUpToolsOverlayObserver();
+    }
   
     const parentContainer = instance.iframeWindow.document.querySelector('.document-content-container');
   
