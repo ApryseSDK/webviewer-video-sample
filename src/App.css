@@ -16,6 +16,10 @@
   color: white;
 }
 
+iframe[title="webviewer"] {
+  position: absolute;
+} 
+
 .compare-app {
   width: 100%;
   height: calc(100% - 76px);
