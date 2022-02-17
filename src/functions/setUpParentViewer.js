@@ -65,7 +65,7 @@ const onVideoSettingsUpdated = (instance1, instance2) => {
   };
 };
 
-const setUpParentViewer = ({ parentInstance, instance1, instance2, videoInstance1, videoInstance2 }, parentWrapper, activeInstance) => {
+const setupParentViewer = ({ parentInstance, instance1, instance2, videoInstance1, videoInstance2 }, parentWrapper, activeInstance) => {
   parentInstance.disableElements([
     'downloadButton',
     'selectToolButton',
@@ -198,6 +198,6 @@ const onParentDocumentLoaded = (instance, parentWrapper, compareContainer) => {
 };
 
 export {
-  setUpParentViewer,
+  setupParentViewer,
   onParentDocumentLoaded,
 };

@@ -62,9 +62,8 @@ const App = () => {
           const xfdfString = demoXFDFString;
           await annotManager.importAnnotations(xfdfString);
           video.updateAnnotationsToTime(0);
-          docViewer.removeEventListener('documentLoaded', onDocumentLoaded);
         };
-        docViewer.addEventListener('documentLoaded', onDocumentLoaded);
+        docViewer.addEventListener('documentLoaded', onDocumentLoaded, { once: true });
       }
     });
   }, []);

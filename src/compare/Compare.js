@@ -16,9 +16,9 @@ import {
   switchActiveInstance
 } from '../functions/initCompareViewer';
 import {
-  setUpParentViewer,
+  setupParentViewer,
   onParentDocumentLoaded,
-} from '../functions/setUpParentViewer';
+} from '../functions/setupParentViewer';
 
 const CompareApp = () => {
   const parentViewer = useRef(null);
@@ -50,7 +50,7 @@ const CompareApp = () => {
     } = state;
 
     if (parentInstance && instance1 && instance2) {
-      setUpParentViewer(state, parentWrapper, activeInstance);
+      setupParentViewer(state, parentWrapper, activeInstance);
       createSyncButton({ 
         mainInstance: instance1,
         mainVideoInstance: videoInstance1,
@@ -84,14 +84,14 @@ const CompareApp = () => {
         { license },
       );
 
-      const videoInstance3 = await initializeVideoViewer(
+      const parentInstance = await initializeVideoViewer(
         instance,
         {
           license,
           isCompare: true,
           showAnnotationPreview: false,
-          hideOutOfRangeAnnotations: false,
           AudioComponent: Waveform,
+          hideOutOfRangeAnnotations: false,
           showFrames: false,
           showTooltipPreview: false,
         }
@@ -100,7 +100,7 @@ const CompareApp = () => {
       instance.setTheme('dark');
 
       // We load a dummy video here to be able to load annotations into parent webviewer instance
-      videoInstance3.loadVideo('https://pdftron.s3.amazonaws.com/downloads/pl/video/blank-0.2-sec.m4v');
+      parentInstance.loadVideo('https://pdftron.s3.amazonaws.com/downloads/pl/video/blank-0.2-sec.m4v');
       setState(prevState => ({ ...prevState, parentInstance: instance }));
 
       instance.docViewer.addEventListener(
@@ -158,9 +158,8 @@ const CompareApp = () => {
           const xfdfString = demoXFDFString;
           await annotManager.importAnnotations(xfdfString);
           video.updateAnnotationsToTime(0);
-          docViewer.removeEventListener('documentLoaded', onDocumentLoaded);
         };
-        docViewer.addEventListener('documentLoaded', onDocumentLoaded);
+        docViewer.addEventListener('documentLoaded', onDocumentLoaded, { once: true });
       }
     });
 
@@ -212,9 +211,8 @@ const CompareApp = () => {
           const xfdfString = demoXFDFString;
           await annotManager.importAnnotations(xfdfString);
           video.updateAnnotationsToTime(0);
-          docViewer.removeEventListener('documentLoaded', onDocumentLoaded);
         };
-        docViewer.addEventListener('documentLoaded', onDocumentLoaded);
+        docViewer.addEventListener('documentLoaded', onDocumentLoaded, { once: true });
       }
     });
   }, []);
