@@ -55,14 +55,16 @@ const App = () => {
 
       if (process.env.DEMO) {
         // Load saved annotations
-        const onVideoElementLoaded = async () => {
-          const video = videoInstance.getVideo();
-          const xfdfString = demoXFDFString;
-          await annotManager.importAnnotations(xfdfString);
-          video.updateAnnotationsToTime(0);
-          docViewer.removeEventListener('videoElementLoaded', onVideoElementLoaded);
-        };
-        docViewer.addEventListener('videoElementLoaded', onVideoElementLoaded);
+        docViewer.addEventListener(
+          'videoElementLoaded', 
+          async () => {
+            const video = videoInstance.getVideo();
+            const xfdfString = demoXFDFString;
+            await annotManager.importAnnotations(xfdfString);
+            video.updateAnnotationsToTime(0);
+          },
+          { once: true },
+        );
       }
     });
   }, []);
