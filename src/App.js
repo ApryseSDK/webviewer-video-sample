@@ -20,7 +20,6 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
-        autoFocusReplyInputOnAnnotationSelect: false,
       },
       viewer.current,
     ).then(async instance => {
