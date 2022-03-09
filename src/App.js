@@ -20,7 +20,6 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
-        autoFocusReplyInputOnAnnotationSelect: false,
       },
       viewer.current,
     ).then(async instance => {
@@ -56,14 +55,16 @@ const App = () => {
 
       if (process.env.DEMO) {
         // Load saved annotations
-        const onDocumentLoaded = async () => {
-          const video = videoInstance.getVideo();
-          const xfdfString = demoXFDFString;
-          await annotManager.importAnnotations(xfdfString);
-          video.updateAnnotationsToTime(0);
-          docViewer.removeEventListener('documentLoaded', onDocumentLoaded);
-        };
-        docViewer.addEventListener('documentLoaded', onDocumentLoaded);
+        docViewer.addEventListener(
+          'videoElementLoaded', 
+          async () => {
+            const video = videoInstance.getVideo();
+            const xfdfString = demoXFDFString;
+            await annotManager.importAnnotations(xfdfString);
+            video.updateAnnotationsToTime(0);
+          },
+          { once: true },
+        );
       }
     });
   }, []);
@@ -75,8 +76,10 @@ const App = () => {
 
     // Seamlessly switch between PDFs and videos.
     // Can also detect by specific video file types (ie. mp4, ogg, etc.)
-    if (file.type.includes('video')) {
-      videoInstance.loadVideo(url, { fileName: file.name, });
+    if (file.type.includes('video') ||
+      (file.name.includes('.mpd') && file.type === '')
+    ) {
+      videoInstance.loadVideo(url, { type: file.type, });
       // TODO: Notespanel needs to be delayed when opening. Not sure why.
       setTimeout(() => {
         instance.openElements('notesPanel');
