@@ -99,7 +99,6 @@ const App = () => {
   function initializeHeader(instance) {
     const { setHeaderItems } = instance;
 
-    // Add save annotations button
     setHeaderItems(header => {
       // Add upload file button
       header.push({
@@ -109,7 +108,7 @@ const App = () => {
         <path d="M20 18H4V11H2V18C2 19.103 2.897 20 4 20H20C21.103 20 22 19.103 22 18V11H20V18Z" fill="currentColor"/>
         </svg>`,
         title: 'Load file',
-        dataElement: 'audio-loadFileButton',
+        dataElement: 'video-filePickerButton',
         onClick: () => {
           inputFile.current.click();
         }
