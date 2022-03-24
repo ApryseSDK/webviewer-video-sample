@@ -108,7 +108,7 @@ const App = () => {
         <path d="M20 18H4V11H2V18C2 19.103 2.897 20 4 20H20C21.103 20 22 19.103 22 18V11H20V18Z" fill="currentColor"/>
         </svg>`,
         title: 'Load file',
-        dataElement: 'video-filePickerButton',
+        dataElement: 'audio-loadFileButton',
         onClick: () => {
           inputFile.current.click();
         }
