@@ -79,13 +79,13 @@ const App = () => {
     if (file.type.includes('video') ||
       (file.name.includes('.mpd') && file.type === '')
     ) {
-      videoInstance.loadVideo(url, { type: file.type, });
+      videoInstance.loadVideo(url, { fileName: file.name });
       // TODO: Notespanel needs to be delayed when opening. Not sure why.
       setTimeout(() => {
         instance.openElements('notesPanel');
       });
     } else if (file.type.includes('audio')) {
-      audioInstance.loadAudio(url);
+      audioInstance.loadAudio(url, { fileName: file.name });
 
       setTimeout(() => {
         instance.openElements('notesPanel');
