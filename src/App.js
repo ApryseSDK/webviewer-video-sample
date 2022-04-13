@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import WebViewer from '@pdftron/webviewer';
 import { initializeVideoViewer } from '@pdftron/webviewer-video';
 import './App.css';
@@ -20,12 +20,29 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
+        autoFocusNoteOnAnnotationSelection: true,
       },
       viewer.current,
     ).then(async instance => {
       const license = `---- Insert commercial license key here after purchase ----`;
       const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
 
+      const socket = new WebSocket('wss://dya2mxwl63.execute-api.us-west-2.amazonaws.com/production');
+      socket.onopen = () => console.log('connected');
+      socket.onmessage = event => {
+        const data = JSON.parse(event.data);
+        console.log(data);
+        if (data.statusCode === 200) {
+          videoInstance.loadVideo(data.body);
+        } else {
+          // either endpoint timeout issue or a different error occurred
+        }
+      };
+      socket.onerror = error => console.log('error', error);
+      socket.onclose = () => {
+        console.log('disconnected');
+      };
+      
       const audioInstance = await initializeAudioViewer(
         instance,
         { license },
@@ -48,7 +65,7 @@ const App = () => {
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
       videoInstance.loadVideo(videoUrl);
-      initializeHeader(instance);
+      initializeHeader(instance, socket);
 
       const { docViewer } = instance;
       const annotManager = docViewer.getAnnotationManager();
@@ -96,7 +113,7 @@ const App = () => {
     }
   };
 
-  function initializeHeader(instance) {
+  const initializeHeader = useCallback((instance, socket) => {
     const { setHeaderItems } = instance;
 
     setHeaderItems(header => {
@@ -114,7 +131,39 @@ const App = () => {
         }
       });
     });
-  }
+
+    setHeaderItems(header => {
+      // Add upload file button
+      header.push({
+        type: 'actionButton',
+        img: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 15H13V9H16L12 4L8 9H11V15Z" fill="currentColor"/>
+        <path d="M20 18H4V11H2V18C2 19.103 2.897 20 4 20H20C21.103 20 22 19.103 22 18V11H20V18Z" fill="currentColor"/>
+        </svg>`,
+        title: 'Test Redact',
+        dataElement: 'audio-loadFileButton',
+        onClick: () => {
+          const message = {
+            "action": "video-redact",
+            "intervals": [
+              {
+                "startTime": 0,
+                "endTime": 12.3
+              },
+              {
+                "startTime": 15,
+                "endTime": 20.3
+              }
+            ],
+            "url": "https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4"
+          };
+          socket.send(JSON.stringify(message), err => {
+            console.log(err);
+          });
+        }
+      });
+    });
+  }, []);
 
   return (
     <div className="App">
