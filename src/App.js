@@ -20,11 +20,83 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
+        fullAPI: true,
+        enableRedaction: true,        
       },
       viewer.current,
     ).then(async instance => {
+      const { Annotations, annotationManager, Tools, documentViewer } = instance.Core;
+
+      console.log('function -----', instance.UI.createPageRedactions);
+
+      window.foo = instance.UI.createPageRedactions;
+
+      class TriangleAnnotation extends Annotations.CustomAnnotation {
+        constructor() {
+          super('triangle'); // provide the custom XFDF element name
+          this.Subject = 'Redact';
+          this.type = 'fullVideoFrame';
+        }
+
+        draw(ctx, pageMatrix) {
+          // the setStyles function is a function on markup annotations that sets up
+          // certain properties for us on the canvas for the annotation's stroke thickness.
+          this.setStyles(ctx, pageMatrix);
+      
+          // first we need to translate to the annotation's x/y coordinates so that it's
+          // drawn in the correct location
+          ctx.translate(this.X, this.Y);
+          ctx.beginPath();
+          ctx.moveTo(this.Width / 2, 0);
+          ctx.lineTo(this.Width, this.Height);
+          ctx.lineTo(0, this.Height);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+    
+      // this is necessary to set the elementName before instantiation
+      TriangleAnnotation.prototype.elementName = 'triangle';
+      annotationManager.registerAnnotationType(TriangleAnnotation.prototype.elementName, TriangleAnnotation);
+
+      class TriangleCreateTool extends Tools.GenericAnnotationCreateTool {
+        constructor(documentViewer) {
+          // TriangleAnnotation is the class (function) for our annotation we defined previously
+          super(documentViewer, TriangleAnnotation);
+        }
+      }
+
       const license = `---- Insert commercial license key here after purchase ----`;
-      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+      // const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4?x-api-key=${apiKey}&x-auth-token=${authToken}&viewSessionId=${viewSessionId}&format=VIDEO`;';
+      // const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/world-test.mp4';
+      // const videoUrl = '/world-test.mp4';
+
+      const triangleToolName = 'AnnotationCreateTriangle';
+      const triangleTool = new TriangleCreateTool(documentViewer);
+      instance.UI.registerTool({
+        toolName: triangleToolName,
+        toolObject: triangleTool,
+        buttonImage: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">' +
+          '<path d="M12 7.77L18.39 18H5.61L12 7.77M12 4L2 20h20L12 4z"/>' +
+          '<path fill="none" d="M0 0h24v24H0V0z"/>' +
+        '</svg>',
+        buttonName: 'triangleToolButton',
+        tooltip: 'Triangle'
+      }, TriangleAnnotation);
+      
+      instance.UI.setHeaderItems(header => {
+        header.getHeader('toolbarGroup-Shapes').get('freeHandToolGroupButton').insertBefore({
+          type: 'toolButton',
+          toolName: triangleToolName,
+        });
+      });
+      
+      documentViewer.addEventListener('documentLoaded', () => {
+        // set the tool mode to our tool so that we can start using it right away
+        instance.UI.setToolMode(triangleToolName);
+      });
 
       const audioInstance = await initializeAudioViewer(
         instance,
@@ -47,7 +119,11 @@ const App = () => {
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      videoInstance.loadVideo(videoUrl);
+      videoInstance.loadVideo(videoUrl, {
+        headers: {
+          'x-api-key': 'skdfjsdkf',
+        },
+      });
       initializeHeader(instance);
 
       const { docViewer } = instance;
