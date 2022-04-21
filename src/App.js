@@ -29,7 +29,30 @@ const App = () => {
 
       console.log('function -----', instance.UI.createPageRedactions);
 
-      window.foo = instance.UI.createPageRedactions;
+
+
+      // window.foo = instance.UI.createPageRedactions;
+      window.foo = pageNumbers => {
+        const annots = [];
+        for (const page of pageNumbers) {
+          const pageInfo = documentViewer.getDocument().getPageInfo(page);
+          if (pageInfo) {
+            const redaction = new Annotations.RedactionAnnotation({
+              PageNumber: page,
+              Rect: new Annotations.Rect(0, 0, pageInfo.width, pageInfo.height),
+            });
+            redaction.type = 'fullPage';
+            redaction.setCustomData('trn-redaction-type', 'fullPage');
+            redaction.Author = annotationManager.getCurrentUser();
+            redaction.startTime = 0;
+            redaction.endTime = 300;
+            annots.push(redaction);
+          }
+        }
+        annotationManager.addAnnotations(annots);
+        annotationManager.drawAnnotationsFromList(annots);
+        return annots;
+      };
 
       class TriangleAnnotation extends Annotations.CustomAnnotation {
         constructor() {
@@ -111,6 +134,47 @@ const App = () => {
           generatedPeaks: !process.env.DEMO ? null : demoPeaks // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
         }
       );
+
+      const socket = new WebSocket('wss://dya2mxwl63.execute-api.us-west-2.amazonaws.com/production');
+      socket.onopen = () => console.log('connected');
+      socket.onmessage = event => {
+        const data = JSON.parse(event.data);
+        console.log(data);
+        if (data.statusCode === 200) {
+          videoInstance.loadVideo(data.body);
+        } else {
+          // either endpoint timeout issue or a different error occurred
+        }
+      };
+      socket.onerror = error => console.log('error', error);
+      socket.onclose = () => {
+        console.log('disconnected');
+      };
+
+      instance.UI.setCustomApplyRedactionsFunction(arr => {
+        console.log('custom---', arr);
+        const { startTime, endTime } = arr[0];
+        console.log(startTime, endTime);
+
+        const message = {
+          "action": "video-redact",
+          "intervals": [
+            {
+              startTime,
+              endTime,
+            },
+            // {
+            //   "startTime": 15,
+            //   "endTime": 20.3
+            // }
+          ],
+          "url": "https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4"
+        };
+        socket.send(JSON.stringify(message), err => {
+          console.log(err);
+        });
+
+      });      
 
       instance.setTheme('dark');
 
