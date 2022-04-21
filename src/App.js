@@ -135,46 +135,36 @@ const App = () => {
         }
       );
 
-      const socket = new WebSocket('wss://dya2mxwl63.execute-api.us-west-2.amazonaws.com/production');
-      socket.onopen = () => console.log('connected');
-      socket.onmessage = event => {
-        const data = JSON.parse(event.data);
-        console.log(data);
-        if (data.statusCode === 200) {
-          videoInstance.loadVideo(data.body);
-        } else {
-          // either endpoint timeout issue or a different error occurred
-        }
-      };
-      socket.onerror = error => console.log('error', error);
-      socket.onclose = () => {
-        console.log('disconnected');
-      };
+      // const socket = new WebSocket('wss://dya2mxwl63.execute-api.us-west-2.amazonaws.com/production');
+      // socket.onopen = () => console.log('connected');
+      // socket.onmessage = event => {
+      //   const data = JSON.parse(event.data);
+      //   console.log(data);
+      //   if (data.statusCode === 200) {
+      //     videoInstance.loadVideo(data.body);
+      //   } else {
+      //     // either endpoint timeout issue or a different error occurred
+      //   }
+      // };
+      // socket.onerror = error => console.log('error', error);
+      // socket.onclose = () => {
+      //   console.log('disconnected');
+      // };
 
-      instance.UI.setCustomApplyRedactionsFunction(arr => {
-        console.log('custom---', arr);
-        const { startTime, endTime } = arr[0];
-        console.log(startTime, endTime);
-
-        const message = {
-          "action": "video-redact",
-          "intervals": [
-            {
-              startTime,
-              endTime,
-            },
-            // {
-            //   "startTime": 15,
-            //   "endTime": 20.3
-            // }
-          ],
-          "url": "https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4"
-        };
-        socket.send(JSON.stringify(message), err => {
-          console.log(err);
-        });
-
-      });      
+      // instance.UI.setCustomApplyRedactionsFunction(redactionAnnots => {
+      //   const message = {
+      //     "action": "video-redact",
+      //     "intervals": [],
+      //     "url": "https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4"
+      //   };
+      //   redactionAnnots.forEach(redactionAnnot => {
+      //     const { startTime, endTime } = redactionAnnot;
+      //     message.intervals.push({ startTime, endTime });
+      //   });
+      //   socket.send(JSON.stringify(message), err => {
+      //     console.log(err);
+      //   });
+      // });      
 
       instance.setTheme('dark');
 
