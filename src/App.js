@@ -27,10 +27,6 @@ const App = () => {
     ).then(async instance => {
       const { Annotations, annotationManager, Tools, documentViewer } = instance.Core;
 
-      console.log('function -----', instance.UI.createPageRedactions);
-
-
-
       // window.foo = instance.UI.createPageRedactions;
       window.foo = pageNumbers => {
         const annots = [];
@@ -92,7 +88,9 @@ const App = () => {
 
       const license = `---- Insert commercial license key here after purchase ----`;
       // const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
-      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4?x-api-key=${apiKey}&x-auth-token=${authToken}&viewSessionId=${viewSessionId}&format=VIDEO`;';
+      // const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/dog.mp4';
+      // const videoUrl = '/dog-tall-video.mp4';
       // const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/world-test.mp4';
       // const videoUrl = '/world-test.mp4';
 
