@@ -20,6 +20,7 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
+        enableRedaction: true,
       },
       viewer.current,
     ).then(async instance => {
