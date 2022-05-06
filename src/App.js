@@ -84,6 +84,7 @@ const App = () => {
       setTimeout(() => {
         instance.openElements('notesPanel');
       });
+      initializeHeader(instance);
     } else if (file.type.includes('audio')) {
       audioInstance.loadAudio(url, { fileName: file.name });
 
@@ -93,6 +94,7 @@ const App = () => {
     } else {
       instance.setToolMode('AnnotationEdit');
       instance.loadDocument(url);
+      initializeHeader(instance);
     }
   };
 
