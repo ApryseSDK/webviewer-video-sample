@@ -20,7 +20,6 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
-        disableVirtualDisplayMode: true,
       },
       viewer.current,
     ).then(async instance => {
@@ -37,6 +36,7 @@ const App = () => {
         {
           license,
           AudioComponent: Waveform,
+          isDemoMode: process.env.DEMO,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
         }
       );
