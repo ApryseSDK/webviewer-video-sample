@@ -21,7 +21,7 @@ const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin-alt');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
-
+const TerserPlugin = require("terser-webpack-plugin");
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -164,6 +164,23 @@ module.exports = {
         cache: true,
         sourceMap: shouldUseSourceMap,
       }),
+      // new TerserPlugin({
+      //   test: /\.js(\?.*)?$/i,
+      //   // extractComments: true,
+      //   // parallel: true,
+      //   // sourceMap: true,
+      //   // terserOptions: {
+      //   //   keep_fnames: false, // <---- By setting this value to false everything started working again
+      //   // },        
+      //   // chunkFilter: (chunk) => {
+      //   //   // // Exclude uglification for the `vendors` chunk
+      //   //   // if (chunk.name === 'vendors') {
+      //   //   //   return false;
+      //   //   // }
+      //   //   console.log(chunk.name);
+      //   //   return true;
+      //   // }  
+      // }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {
           parser: safePostCssParser,
