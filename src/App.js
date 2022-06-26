@@ -10,6 +10,7 @@ import {
   demoPeaks,
   demoXFDFString,
 } from './constants/demo-vars';
+import axios from 'axios';
 
 const App = () => {
   const viewer = useRef(null);
@@ -21,12 +22,12 @@ const App = () => {
       {
         path: '/webviewer/lib',
         disableVirtualDisplayMode: true,
-        enableRedaction: process.env.DEMO ? true : false,
+        enableRedaction: true,
       },
       viewer.current,
     ).then(async instance => {
       const license = `---- Insert commercial license key here after purchase ----`;
-      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/dog.mp4';
 
       const audioInstance = await initializeAudioViewer(
         instance,
@@ -38,7 +39,6 @@ const App = () => {
         {
           license,
           AudioComponent: Waveform,
-          isDemoMode: process.env.DEMO,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
         }
       );
@@ -55,6 +55,7 @@ const App = () => {
 
       const { docViewer } = instance;
       const annotManager = docViewer.getAnnotationManager();
+      const annotHistoryManager = docViewer.getAnnotationHistoryManager();
 
       if (process.env.DEMO) {
         // Load saved annotations
@@ -69,6 +70,30 @@ const App = () => {
           { once: true },
         );
       }
+
+      annotHistoryManager.on('historyChanged', e => {
+        console.log(e);
+      });
+
+      console.log(instance, docViewer);
+
+      videoInstance.UI.updateElement('redactVideoButton', {
+        onClick: async redactAnnotations => {
+          const { data: videoBuffer } = await axios.post('http://localhost:3001/video/redact', {
+            intervals: redactAnnotations.map(annotation => ({
+              start: annotation.startTime,
+              end: annotation.endTime,
+            })),
+            url: 'https://pdftron.s3.amazonaws.com/downloads/pl/video/dog.mp4',
+          }, {
+            responseType: 'arraybuffer'
+          });
+
+          const newVideoBlob = new Blob([videoBuffer], { type: 'video/mp4' });
+          videoInstance.loadVideo(URL.createObjectURL(newVideoBlob));
+          return videoBuffer;
+        }
+      });
     });
   }, []);
 

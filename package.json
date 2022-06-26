@@ -7,6 +7,7 @@
     "@pdftron/webviewer-audio": "^2.14.6",
     "@pdftron/webviewer-video": "^4.22.4",
     "@svgr/webpack": "2.4.1",
+    "axios": "^0.27.2",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
     "babel-jest": "23.6.0",
