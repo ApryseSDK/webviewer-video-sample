@@ -35,14 +35,17 @@ const App = () => {
 
       const videoInstance = await initializeVideoViewer(
         instance,
+        1,
         {
           license,
-          AudioComponent: Waveform,
+          //AudioComponent: Waveform,
           isDemoMode: process.env.DEMO,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks, // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
           enableRedaction: process.env.DEMO ? true : false,
         }
       );
+
+      videoInstance.UI.enableCompareMode();
 
       instance.setTheme('dark');
 
