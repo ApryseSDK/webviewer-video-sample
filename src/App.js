@@ -20,7 +20,6 @@ const App = () => {
     WebViewer(
       {
         path: '/webviewer/lib',
-        disableVirtualDisplayMode: true,
         enableRedaction: process.env.DEMO ? true : false,
       },
       viewer.current,
