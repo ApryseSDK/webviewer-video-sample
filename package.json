@@ -71,6 +71,7 @@
     "start-demo": "DEMO=true node scripts/start.js",
     "deploy-demo": "npm run build-demo && firebase deploy --only hosting:webviewer-video && node -e \"console.log('%sMake sure to test demo page in INCOGNITO: https://www.pdftron.com/samples/web/samples/advanced/video/%s', '\\x1b[42;30m', '\\x1b[0m' )\"",
     "deploy-demo-beta-v4": "npm run build-demo && firebase deploy --only hosting:webviewer-video-4-0",
+    "deploy-compare": "npm run build-demo && firebase deploy --only hosting:webviewer-video-compare",
     "start-server": "node server/server.js",
     "build": "GENERATE_SOURCEMAP=false node scripts/build.js",
     "build-demo": "GENERATE_SOURCEMAP=false DEMO=true node scripts/build.js",
