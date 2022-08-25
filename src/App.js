@@ -59,7 +59,7 @@ const App = () => {
       if (process.env.DEMO) {
         // Load saved annotations
         docViewer.addEventListener(
-          'videoElementLoaded', 
+          'videoElementReady',
           async () => {
             const video = videoInstance.getVideo();
             const xfdfString = demoXFDFString;
