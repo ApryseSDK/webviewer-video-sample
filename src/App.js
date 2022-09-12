@@ -7,7 +7,6 @@ import {
   initializeAudioViewer
 } from '@pdftron/webviewer-audio';
 import {
-  demoPeaks,
   demoXFDFString,
 } from './constants/demo-vars';
 
@@ -25,7 +24,7 @@ const App = () => {
       viewer.current,
     ).then(async instance => {
       const license = `---- Insert commercial license key here after purchase ----`;
-      const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
+      let currentVideoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/bunny-short.mp4';
 
       const audioInstance = await initializeAudioViewer(
         instance,
@@ -38,7 +37,6 @@ const App = () => {
           license,
           AudioComponent: Waveform,
           isDemoMode: process.env.DEMO,
-          generatedPeaks: !process.env.DEMO ? null : demoPeaks, // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
           enableRedaction: process.env.DEMO ? true : false,
         }
       );
@@ -50,8 +48,59 @@ const App = () => {
       // Load a video at a specific url. Can be a local or public link
       // If local it needs to be relative to lib/ui/index.html.
       // Or at the root. (eg '/video.mp4')
-      videoInstance.loadVideo(videoUrl);
+      videoInstance.loadVideo(currentVideoUrl);
       initializeHeader(instance);
+
+      videoInstance.UI.updateElement('redactApplyButton', {
+        onClick: async redactAnnotations => {
+          const socket = new WebSocket('wss://dya2mxwl63.execute-api.us-west-2.amazonaws.com/production');
+          await new Promise(async (resolve, reject) => {
+            socket.onmessage = event => {
+              const data = JSON.parse(event.data);
+              // response do something
+              if (data.statusCode === 200) {
+                currentVideoUrl = data.body;
+                videoInstance.loadVideo(data.body, {
+                  fileName: 'myvideo.mp4',
+                });
+                resolve();
+              } else {
+                // either endpoint timeout issue or a different error occurred
+                if (data && data.message === 'Endpoint request timed out') {
+                  // ignore this error. Lambda seems to work fine even when it happens.
+                } else {
+                  reject('Something went wrong with redaction endpoint', data);
+                  console.error('Something went wrong with redaction endpoint', data);
+                }
+              }
+            };
+            await new Promise(resolve => {
+              socket.onopen = () => {
+                resolve();
+              };
+            });
+            const message = {
+              'action': 'video-redact',
+              'intervals': [],
+              'url': currentVideoUrl,
+            };
+            redactAnnotations.forEach(redactionAnnot => {
+              const { redactionType } = redactionAnnot;
+              const startTime = parseFloat(redactionAnnot.getCustomData('trn-video-start-time'));
+              const endTime = parseFloat(redactionAnnot.getCustomData('trn-video-end-time'));
+              const shouldRedactAudio = redactionAnnot.getCustomData('trn-redact-audio') === 'true';
+
+              message.intervals.push({
+                startTime,
+                endTime,
+                shouldRedactAudio: shouldRedactAudio || redactionType === 'audioRedaction',
+                shouldRedactVideo: redactionType !== 'audioRedaction',
+              });
+            });
+            socket.send(JSON.stringify(message));
+          });
+        }
+      });
 
       const { docViewer } = instance;
       const annotManager = docViewer.getAnnotationManager();
