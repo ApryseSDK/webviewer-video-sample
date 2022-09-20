@@ -61,7 +61,7 @@
     "workbox-webpack-plugin": "3.6.3"
   },
   "devDependencies": {
-    "@pdftron/media-sample-server": "^1.0.1",
+    "@pdftron/media-sample-server": "^1.0.3",
     "btoa": "^1.2.1",
     "concurrently": "^7.4.0",
     "download": "^7.1.0",
