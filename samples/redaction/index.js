@@ -24,6 +24,9 @@ window.WebViewer(
     },
   );
 
+  const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/bunny-short.mp4';
+  videoInstance.loadVideo(videoUrl);
+
   videoInstance.UI.updateElement('redactApplyButton', {
     onClick: async redactAnnotations => {
       const response = await fetch('http://localhost:3001/video/redact', {
@@ -35,7 +38,7 @@ window.WebViewer(
             shouldRedactAudio: annotation.shouldRedactAudio || annotation.redactionType === 'audioRedaction',
             shouldRedactVideo: annotation.redactionType !== 'audioRedaction',
           })),
-          url: 'https://pdftron.s3.amazonaws.com/downloads/pl/video/bunny-short.mp4',
+          url: videoUrl,
         }),
         headers: {
           'Accept': 'application/json',
@@ -50,7 +53,4 @@ window.WebViewer(
       return videoBuffer;
     }
   });
-
-  const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/bunny-short.mp4';
-  videoInstance.loadVideo(videoUrl);
 });
