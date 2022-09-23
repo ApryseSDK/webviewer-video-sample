@@ -8,12 +8,7 @@ window.WebViewer(
   instance.setTheme('dark');
   const license = `---- Insert commercial license key here after purchase ----`;
 
-  const { Waveform, initializeAudioViewer } = window.WebViewerAudio;
-  await initializeAudioViewer(
-    instance,
-    { license },
-  );
-
+  const { Waveform } = window.WebViewerAudio;
   const { initializeVideoViewer } = window.WebViewerVideo;
   const videoInstance = await initializeVideoViewer(
     instance,
