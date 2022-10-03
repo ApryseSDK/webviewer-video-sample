@@ -34,6 +34,7 @@ const App = () => {
 
       const videoInstance = await initializeVideoViewer(
         instance,
+        1,
         {
           license,
           AudioComponent: Waveform,
@@ -44,6 +45,8 @@ const App = () => {
       );
 
       instance.setTheme('dark');
+
+      await videoInstance.UI.enableCompareMode();
 
       setState({ instance, videoInstance, audioInstance });
 
