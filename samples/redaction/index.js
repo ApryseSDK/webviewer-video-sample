@@ -8,12 +8,7 @@ window.WebViewer(
   instance.setTheme('dark');
   const license = `---- Insert commercial license key here after purchase ----`;
 
-  const { Waveform, initializeAudioViewer } = window.WebViewerAudio;
-  await initializeAudioViewer(
-    instance,
-    { license },
-  );
-
+  const { Waveform } = window.WebViewerAudio;
   const { initializeVideoViewer } = window.WebViewerVideo;
   const videoInstance = await initializeVideoViewer(
     instance,
@@ -23,6 +18,9 @@ window.WebViewer(
       enableRedaction: true,
     },
   );
+
+  const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/bunny-short.mp4';
+  videoInstance.loadVideo(videoUrl);
 
   videoInstance.UI.updateElement('redactApplyButton', {
     onClick: async redactAnnotations => {
@@ -35,7 +33,7 @@ window.WebViewer(
             shouldRedactAudio: annotation.shouldRedactAudio || annotation.redactionType === 'audioRedaction',
             shouldRedactVideo: annotation.redactionType !== 'audioRedaction',
           })),
-          url: 'https://pdftron.s3.amazonaws.com/downloads/pl/video/bunny-short.mp4',
+          url: videoUrl,
         }),
         headers: {
           'Accept': 'application/json',
@@ -50,7 +48,4 @@ window.WebViewer(
       return videoBuffer;
     }
   });
-
-  const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/bunny-short.mp4';
-  videoInstance.loadVideo(videoUrl);
 });
