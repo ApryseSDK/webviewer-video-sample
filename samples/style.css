@@ -191,30 +191,9 @@ section h4 {
   margin-bottom: 0.5em;
 }
 
-section .sidebar {
-  position: fixed;
-  width: 250px;
-}
-
-section .sidebar a {
-  text-decoration: none;
-  color: black;
-}
-
-section .sidebar a.active,
-section .sidebar a:hover {
-  color: #00a5e4;
-}
-
-section .sidebar b {
-  line-height: 2em;
-  color: #00a5e4;
-}
-
 section .content {
   display: inline-block;
-  width: calc(100% - 250px);
-  margin-left: 250px;
+  width: 100%;
   line-height: 1.5em;
 }
 
