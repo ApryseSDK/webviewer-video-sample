@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      if (window.location.href.slice(-1) !== '/' && window.location.href.slice(-4) !== 'html') {
+        // hacky redirect for mac php server...
+        window.location = window.location.href + '/';
+      }
+    </script>
+    <link rel="stylesheet" href="./style.css">
+    <title>WebViewer Video Samples</title>
+  </head>
+
+  <body class='pdftron'>
+    <header>
+      <div class="container">
+        <div>
+          <a href="https://pdftron.com" target="_blank">
+            <div class="logo"></div>
+          </a>
+          <span class="title">WebViewer Video Samples & Demo</span>
+        </div>
+        <div>
+          <a class="button" href="https://www.pdftron.com/documentation/web/guides/video" target="_blank">Go to Guides</a>
+          <a class="button filled" href="https://pdftron.com/licensing" target="_blank">Licensing</a>
+        </div>
+      </div>
+    </header>
+    <section>
+      <div class="content">
+        <div>
+          <h4>Redaction</h4>
+          <p>
+            Shows how to setup WebViewer and WebViewer Video to redact video frames and/or audio.
+            <br/>
+          </p>
+          <div class='inline'>
+            <a href="./redaction/index.html">Launch demo</a>
+            <a href="https://github.com/PDFTron/webviewer-video-sample/blob/master/samples/redaction/index.js" target="_blank">View Source</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
