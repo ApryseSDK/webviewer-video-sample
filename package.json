@@ -70,7 +70,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "start-samples": "concurrently \"http-server ./ -a localhost -p 3000\" \"npm run start-samples-server\" \"open http://localhost:3000/samples/redaction\"",
+    "start-samples": "concurrently \"http-server ./ -a localhost -p 3000\" \"npm run start-samples-server\" \"open http://localhost:3000/samples\"",
     "start-samples-server": "npm explore @pdftron/media-sample-server -- npm run start",
     "start-demo": "DEMO=true node scripts/start.js",
     "deploy-demo": "npm run build-demo && firebase deploy --only hosting:webviewer-video && node -e \"console.log('%sMake sure to test demo page in INCOGNITO: https://www.pdftron.com/samples/web/samples/advanced/video/%s', '\\x1b[42;30m', '\\x1b[0m' )\"",
