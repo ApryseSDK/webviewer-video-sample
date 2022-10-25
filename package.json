@@ -4,8 +4,8 @@
   "dependencies": {
     "@babel/core": "7.1.0",
     "@pdftron/webviewer": "^8.8.0-20220926",
-    "@pdftron/webviewer-audio": "^2.14.18",
-    "@pdftron/webviewer-video": "^4.26.4",
+    "@pdftron/webviewer-audio": "^2.15.1",
+    "@pdftron/webviewer-video": "^4.29.0",
     "@svgr/webpack": "2.4.1",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
