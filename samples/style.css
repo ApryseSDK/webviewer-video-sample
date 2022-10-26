@@ -173,6 +173,7 @@ section {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  flex-direction: column;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   width: 100%;

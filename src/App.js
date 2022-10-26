@@ -46,8 +46,6 @@ const App = () => {
 
       instance.setTheme('dark');
 
-      await videoInstance.UI.enableCompareMode();
-
       setState({ instance, videoInstance, audioInstance });
 
       // Load a video at a specific url. Can be a local or public link
