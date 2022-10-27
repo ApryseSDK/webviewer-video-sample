@@ -1,7 +1,6 @@
 window.WebViewer(
   {
     path: '../../public/webviewer/lib/',
-    enableRedaction: true,
   },
   document.getElementById('viewer'),
 ).then(async instance => {
@@ -17,11 +16,9 @@ window.WebViewer(
   const { initializeVideoViewer } = window.WebViewerVideo;
   const videoInstance = await initializeVideoViewer(
     instance,
-    1,
     {
       license,
       AudioComponent: Waveform,
-      enableRedaction: true,
     },
   );
 

@@ -34,7 +34,6 @@ const App = () => {
 
       const videoInstance = await initializeVideoViewer(
         instance,
-        1,
         {
           license,
           AudioComponent: Waveform,
