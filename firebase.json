@@ -16,7 +16,7 @@
       ]
     },
     {
-      "target": "webviewer-video-4-0",
+      "target": "webviewer-video-compare",
       "public": "build",
       "ignore": [
         "firebase.json",
