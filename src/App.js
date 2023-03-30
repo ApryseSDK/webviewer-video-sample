@@ -43,7 +43,7 @@ const App = () => {
         }
       );
 
-      instance.setTheme('dark');
+      instance.UI.setTheme('dark');
 
       setState({ instance, videoInstance, audioInstance });
 
@@ -53,14 +53,19 @@ const App = () => {
       videoInstance.loadVideo(videoUrl);
       initializeHeader(instance);
 
-      const { docViewer } = instance;
-      const annotManager = docViewer.getAnnotationManager();
+      const {
+        Core: {
+          documentViewer,
+        }
+      } = instance;
+      const annotManager = documentViewer.getAnnotationManager();
 
-      if (process.env.DEMO) {
+      if (true) {
         // Load saved annotations
-        docViewer.addEventListener(
+        documentViewer.addEventListener(
           'videoElementReady',
           async () => {
+            console.log('inside');
             const video = videoInstance.getVideo();
             const xfdfString = demoXFDFString;
             await annotManager.importAnnotations(xfdfString);
@@ -94,13 +99,13 @@ const App = () => {
         instance.openElements('notesPanel');
       });
     } else {
-      instance.setToolMode('AnnotationEdit');
+      instance.UI.setToolMode('AnnotationEdit');
       instance.loadDocument(url);
     }
   };
 
   function initializeHeader(instance) {
-    const { setHeaderItems } = instance;
+    const { UI: { setHeaderItems } } = instance;
 
     setHeaderItems(header => {
       // Add upload file button
