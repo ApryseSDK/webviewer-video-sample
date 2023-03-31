@@ -60,12 +60,11 @@ const App = () => {
       } = instance;
       const annotManager = documentViewer.getAnnotationManager();
 
-      if (true) {
+      if (process.env.DEMO) {
         // Load saved annotations
         documentViewer.addEventListener(
           'videoElementReady',
           async () => {
-            console.log('inside');
             const video = videoInstance.getVideo();
             const xfdfString = demoXFDFString;
             await annotManager.importAnnotations(xfdfString);
