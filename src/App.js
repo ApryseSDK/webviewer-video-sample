@@ -43,7 +43,7 @@ const App = () => {
         }
       );
 
-      instance.setTheme('dark');
+      instance.UI.setTheme('dark');
 
       setState({ instance, videoInstance, audioInstance });
 
@@ -53,12 +53,11 @@ const App = () => {
       videoInstance.loadVideo(videoUrl);
       initializeHeader(instance);
 
-      const { docViewer } = instance;
-      const annotManager = docViewer.getAnnotationManager();
-
       if (process.env.DEMO) {
+        const { documentViewer } = instance.Core;
+        const annotManager = documentViewer.getAnnotationManager();
         // Load saved annotations
-        docViewer.addEventListener(
+        documentViewer.addEventListener(
           'videoElementReady',
           async () => {
             const video = videoInstance.getVideo();
@@ -100,7 +99,7 @@ const App = () => {
   };
 
   function initializeHeader(instance) {
-    const { setHeaderItems } = instance;
+    const { setHeaderItems } = instance.UI;
 
     setHeaderItems(header => {
       // Add upload file button
