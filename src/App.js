@@ -53,14 +53,9 @@ const App = () => {
       videoInstance.loadVideo(videoUrl);
       initializeHeader(instance);
 
-      const {
-        Core: {
-          documentViewer,
-        }
-      } = instance;
-      const annotManager = documentViewer.getAnnotationManager();
-
       if (process.env.DEMO) {
+        const { documentViewer } = instance.Core;
+        const annotManager = documentViewer.getAnnotationManager();
         // Load saved annotations
         documentViewer.addEventListener(
           'videoElementReady',
@@ -104,7 +99,7 @@ const App = () => {
   };
 
   function initializeHeader(instance) {
-    const { UI: { setHeaderItems } } = instance;
+    const { setHeaderItems } = instance.UI;
 
     setHeaderItems(header => {
       // Add upload file button
