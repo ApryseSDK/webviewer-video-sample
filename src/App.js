@@ -93,7 +93,7 @@ const App = () => {
         instance.openElements('notesPanel');
       });
     } else {
-      instance.setToolMode('AnnotationEdit');
+      instance.UI.setToolMode('AnnotationEdit');
       instance.loadDocument(url);
     }
   };
