@@ -3,7 +3,6 @@ import WebViewer from '@pdftron/webviewer';
 import { initializeVideoViewer } from '@pdftron/webviewer-video';
 import './App.css';
 import {
-  Waveform,
   initializeAudioViewer
 } from '@pdftron/webviewer-audio';
 import {
@@ -36,7 +35,7 @@ const App = () => {
         instance,
         {
           license,
-          AudioComponent: Waveform,
+          AudioComponent: audioInstance.Waveform,
           isDemoMode: process.env.DEMO,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks, // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
           enableRedaction: process.env.DEMO ? true : false,
