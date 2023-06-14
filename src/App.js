@@ -38,7 +38,6 @@ const App = () => {
           AudioComponent: audioInstance.Waveform,
           isDemoMode: process.env.DEMO,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks, // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
-          enableRedaction: process.env.DEMO ? true : false,
         }
       );
 
@@ -92,7 +91,7 @@ const App = () => {
         instance.openElements('notesPanel');
       });
     } else {
-      instance.setToolMode('AnnotationEdit');
+      instance.UI.setToolMode('AnnotationEdit');
       instance.loadDocument(url);
     }
   };
