@@ -15,7 +15,6 @@ window.WebViewer(
     {
       license,
       AudioComponent: Waveform,
-      enableRedaction: true,
     },
   );
 
