@@ -5,7 +5,7 @@ window.WebViewer(
   },
   document.getElementById('viewer'),
 ).then(async instance => {
-  instance.setTheme('dark');
+  instance.UI.setTheme('dark');
   const license = `---- Insert commercial license key here after purchase ----`;
 
   const { Waveform } = window.WebViewerAudio;
@@ -15,7 +15,6 @@ window.WebViewer(
     {
       license,
       AudioComponent: Waveform,
-      enableRedaction: true,
     },
   );
 

@@ -3,7 +3,6 @@ import WebViewer from '@pdftron/webviewer';
 import { initializeVideoViewer } from '@pdftron/webviewer-video';
 import './App.css';
 import {
-  Waveform,
   initializeAudioViewer
 } from '@pdftron/webviewer-audio';
 import {
@@ -36,14 +35,13 @@ const App = () => {
         instance,
         {
           license,
-          AudioComponent: Waveform,
+          AudioComponent: audioInstance.Waveform,
           isDemoMode: process.env.DEMO,
           generatedPeaks: !process.env.DEMO ? null : demoPeaks, // waves can be pre-generated as seen here for fast loading: https://github.com/bbc/audiowaveform
-          enableRedaction: process.env.DEMO ? true : false,
         }
       );
 
-      instance.setTheme('dark');
+      instance.UI.setTheme('dark');
 
       setState({ instance, videoInstance, audioInstance });
 
@@ -53,12 +51,11 @@ const App = () => {
       videoInstance.loadVideo(videoUrl);
       initializeHeader(instance);
 
-      const { docViewer } = instance;
-      const annotManager = docViewer.getAnnotationManager();
-
       if (process.env.DEMO) {
+        const { documentViewer } = instance.Core;
+        const annotManager = documentViewer.getAnnotationManager();
         // Load saved annotations
-        docViewer.addEventListener(
+        documentViewer.addEventListener(
           'videoElementReady',
           async () => {
             const video = videoInstance.getVideo();
@@ -94,13 +91,13 @@ const App = () => {
         instance.openElements('notesPanel');
       });
     } else {
-      instance.setToolMode('AnnotationEdit');
+      instance.UI.setToolMode('AnnotationEdit');
       instance.loadDocument(url);
     }
   };
 
   function initializeHeader(instance) {
-    const { setHeaderItems } = instance;
+    const { setHeaderItems } = instance.UI;
 
     setHeaderItems(header => {
       // Add upload file button
