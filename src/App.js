@@ -88,11 +88,11 @@ const App = () => {
       audioInstance.loadAudio(url, { fileName: file.name });
 
       setTimeout(() => {
-        instance.openElements('notesPanel');
+        instance.UI.openElements('notesPanel');
       });
     } else {
       instance.UI.setToolMode('AnnotationEdit');
-      instance.loadDocument(url);
+      instance.UI.loadDocument(url);
     }
   };
 
