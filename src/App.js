@@ -16,7 +16,7 @@ const App = () => {
   const [state, setState] = useState({ instance: null, videoInstance: null, audioInstance: null });
 
   useEffect(() => {
-    WebViewer(
+    WebViewer.Iframe(
       {
         path: '/webviewer/lib',
         enableRedaction: process.env.DEMO ? true : false,
