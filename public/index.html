@@ -20,6 +20,27 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>WebViewer Video Sample</title>
+    <script>
+      // React 19 polyfill for deprecated ReactDOM.findDOMNode
+      // This must be loaded before any libraries that use findDOMNode
+      window.__REACT_19_POLYFILL__ = function() {
+        if (window.ReactDOM && !window.ReactDOM.findDOMNode) {
+          window.ReactDOM.findDOMNode = function(component) {
+            if (component && component.current) {
+              return component.current;
+            }
+            if (component && component.nodeType) {
+              return component;
+            }
+            console.warn('findDOMNode is deprecated and has been removed in React 19. Please update your dependencies.');
+            return null;
+          };
+        }
+      };
+      // Try to apply polyfill immediately and after DOM loads
+      window.__REACT_19_POLYFILL__();
+      document.addEventListener('DOMContentLoaded', window.__REACT_19_POLYFILL__);
+    </script>
   </head>
   <body>
     <noscript>

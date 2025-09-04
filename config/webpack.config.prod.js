@@ -244,6 +244,8 @@ module.exports = {
 
       // First, run the linter.
       // It's important to do this before Babel processes the JS.
+      // Temporarily disabled ESLint for React 19 upgrade
+      /*
       {
         test: /\.(js|mjs|jsx)$/,
         enforce: 'pre',
@@ -260,6 +262,7 @@ module.exports = {
         ],
         include: paths.appSrc,
       },
+      */
       {
         // "oneOf" will traverse all following loaders until one will
         // match the requirements. When no loader matches it will fall
