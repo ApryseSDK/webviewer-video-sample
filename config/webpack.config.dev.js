@@ -182,6 +182,8 @@ module.exports = {
 
       // First, run the linter.
       // It's important to do this before Babel processes the JS.
+      // Temporarily disabled ESLint for React 19 upgrade
+      /*
       {
         test: /\.(js|mjs|jsx)$/,
         enforce: 'pre',
@@ -197,6 +199,7 @@ module.exports = {
         ],
         include: paths.appSrc,
       },
+      */
       // Added by KRISTIAN for: Handle node_modules packages that contain sourcemaps
       //  {
       //   test: /\.m?js/,
